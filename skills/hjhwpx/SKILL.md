@@ -1,6 +1,6 @@
 ---
 name: hjhwpx
-description: HWP·HWPX 문서를 원본과 나란히 비교하고 변경안은 노란색, 확인 사항은 빨간색으로 표시한다. /hjhwpx 또는 $hjhwpx 요청, 한글 문서 미리보기·수정·개인정보 보호·원래 형식 다운로드에 사용한다.
+description: HWP·HWPX 문서를 원본과 나란히 비교하고 변경안은 노란색, 확인 사항은 빨간색으로 표시한다. /hjhwpx, /한글hjhwp 또는 $hjhwpx 요청, 한글 문서 미리보기·수정·개인정보 보호·원래 형식 다운로드에 사용한다.
 ---
 
 # hjhwpx
@@ -9,11 +9,11 @@ description: HWP·HWPX 문서를 원본과 나란히 비교하고 변경안은 �
 
 ## 호출
 
-스킬 이름은 `hjhwpx`이다. `/hjhwpx`라는 사용자 메시지도 이 작업을 요청하는 것으로 해석한다. Codex의 표준 명시적 호출은 `$hjhwpx` 또는 `/skills`에서 hjhwpx 선택이다. 호스트의 사용자 정의 slash 메뉴에 `/hjhwpx`가 등록됐다고 주장하지 않는다.
+스킬 이름은 `hjhwpx`이다. `/hjhwpx` 또는 `/한글hjhwp`라는 사용자 메시지도 이 작업을 요청하는 것으로 해석한다. Codex의 표준 명시적 호출은 `$hjhwpx` 또는 `/skills`에서 hjhwpx 선택이다. 이 별칭이 호스트의 사용자 정의 slash 메뉴에 별도 항목으로 등록된다고 주장하지 않는다.
 
 ## 작업
 
-1. 첨부하거나 명시한 문서의 절대 경로를 사용한다. 파일이 없을 때만 문서 지정을 요청한다. 원본 선택을 추측하거나 사용자 폴더 전체를 탐색하지 않는다.
+1. 채팅에 첨부된 문서가 있으면 호스트가 제공한 첨부 파일 경로를 자동으로 사용한다. 첨부가 이미 있을 때 사용자에게 원본 위치를 다시 묻지 않는다. 파일은 열 때 한 번 읽어 세션의 메모리 사본으로 처리하며, 검토·검증·다운로드에서 원본 경로를 다시 열거나 원본을 덮어쓰지 않는다. 첨부가 없을 때만 문서 지정을 요청한다. 원본 선택을 추측하거나 사용자 폴더 전체를 탐색하지 않는다.
 2. `hjhwpx_open_document(file, outputDirectory, plan?)`로 연다. outputDirectory는 현재 작업 공간의 사용자 결과 폴더로 지정한다. 단순 읽기는 replacements를 비운다. 연도 변경처럼 이미 확정된 의도는 `plan.replacements`에 넣어 미리보기만 만든다.
 3. `hjhwpx_inspect_review(sessionId, offset, limit)`로 블록을 확인한다. 개인정보 블록 원문은 반환되지 않으며 실제 미리보기에서 확인한다. 필요한 경우 문서 내용에 맞춰 `protectedBlockIds`와 `reviewNotes`를 추가한다. 번호나 페이지 수를 특정 문서에 고정하지 않는다.
 4. `hjhwpx_update_review(sessionId, expectedRevision, plan)`으로 관련 변경을 한 계획으로 갱신한다. blockIds를 지정하면 해당 블록만 대상으로 한다. expectedCount는 보호 영역을 제외한 실제 변경 수다. 오일치·미지원·원본 변경은 재조회하고 해결한다. 갱신 후에는 이전 화면을 열지 않는다. 모든 검토와 변경 갱신을 마친 다음 5단계에서 최신 미리보기를 연다.

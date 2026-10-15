@@ -16,7 +16,8 @@
         "composerIcon": "./assets/icon.svg",
         "defaultPrompt": [
           "/hjhwpx 첨부한 한글 문서를 미리보기로 열어줘.",
-          "$hjhwpx 저장 전에 변경안을 비교해서 보여줘."
+          "$hjhwpx 저장 전에 변경안을 비교해서 보여줘.",
+          "/한글hjhwp 첨부한 한글 문서를 미리보기로 열어줘."
         ],
         "developerName": "byunhyunjin",
         "displayName": "hj-hwpx-codex",
@@ -29,7 +30,7 @@
     }
   },
   "name": "hj-hwpx-codex",
-  "version": "2.0.4"
+  "version": "2.0.5"
 }
 
 
