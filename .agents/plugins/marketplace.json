@@ -1,0 +1,21 @@
+{
+  "name": "hj-hwpx",
+  "interface": {
+    "displayName": "hj-hwpx"
+  },
+  "plugins": [
+    {
+      "name": "hj-hwpx-codex",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/byunhyunjin2/hj-hwpx-codex.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

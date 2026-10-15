@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "hjhwpx": {
+      "command": "cmd.exe",
+      "args": [
+        "/d",
+        "/c",
+        "runtime\win32-x64\node.exe",
+        "server\mcp.cjs"
+      ],
+      "cwd": "."
+    }
+  }
+}

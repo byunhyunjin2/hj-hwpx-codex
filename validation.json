@@ -1,0 +1,8 @@
+{
+  "version": "1.0.6",
+  "basedOn": "1.0.4",
+  "documentEngine": "unchanged",
+  "localTests": "MCP open/inspect/update/export on HWPX samples, CLI exit, page-level privacy protection, zero-match error",
+  "hostUpload": "not tested",
+  "automaticRemovalHook": false
+}
