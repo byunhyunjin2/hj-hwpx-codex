@@ -1,0 +1,4 @@
+Bundled license information:
+
+cfb/cfb.js:
+  /*! crc32.js (C) 2014-present SheetJS -- http://sheetjs.com */

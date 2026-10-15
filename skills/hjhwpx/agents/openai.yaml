@@ -1,0 +1,6 @@
+interface:
+  display_name: "hjhwpx"
+  short_description: "한글 문서의 변경안 비교·개인정보 보호·원래 형식 다운로드"
+  default_prompt: "$hjhwpx 첨부한 한글 문서를 열고 저장 전에 변경안을 비교해서 보여줘."
+policy:
+  allow_implicit_invocation: true

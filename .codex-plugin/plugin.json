@@ -1,0 +1,30 @@
+{
+  "interface": {
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "category": "Productivity",
+    "composerIcon": "./assets/icon.svg",
+    "defaultPrompt": [
+      "/hjhwpx 첨부한 한글 문서를 미리보기로 열어줘.",
+      "$hjhwpx 저장 전에 변경안을 비교해서 보여줘."
+    ],
+    "developerName": "soohyun kwon",
+    "displayName": "hj-hwpx-codex",
+    "logo": "./assets/icon.svg",
+    "longDescription": "Windows x64에서 별도 kordoc·Node 설치 없이 HWP/HWPX 문서를 비교 검토하고 개인정보를 보호하며 사용자 클릭 후 원래 형식으로 저장합니다.",
+    "shortDescription": "한글 문서 비교·검토·다운로드"
+  },
+  "requires_local_executor": true,
+  "name": "hj-hwpx-codex",
+  "version": "1.0.6",
+  "description": "HWP/HWPX 로컬 비교·개인정보 보호·검토 후 원래 형식 다운로드",
+  "author": {
+    "name": "soohyun kwon",
+    "email": "soohyun1119@gmail.com"
+  },
+  "keywords": [],
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json"
+}
