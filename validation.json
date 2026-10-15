@@ -1,9 +1,25 @@
 {
-  "version": "1.0.7",
-  "basedOn": "1.0.4",
-  "documentEngine": "unchanged",
-  "localTests": "MCP open/inspect/update/export on HWPX samples, CLI exit, page-level privacy protection, zero-match error",
-  "hostUpload": "not tested",
-  "automaticRemovalHook": false
+  "version": "1.0.2",
+  "offlineHTML": {
+    "serverClosedTest": "passed",
+    "downloadMatchesValidatedBytes": "passed",
+    "noHwpHwpxSavedBeforeClick": "passed",
+    "selfContainedImages": "passed",
+    "privacyAndIdentifiers": "passed"
+  },
+  "localMcpSmoke": "passed",
+  "onlineMcp": {
+    "streamableHTTP": "passed",
+    "mcpAppResource": "passed",
+    "uploadInMemory": "passed",
+    "modelOutputRedacted": "passed",
+    "sessionIsolation": "passed",
+    "revisionGuard": "passed",
+    "closeSession": "passed",
+    "originGuard": "passed"
+  },
+  "browserTest": "synthetic MCP Apps bridge harness; compare and review note wrapping passed",
+  "actualChatGPTGeneralChat": "not tested; HTTPS hosting unavailable",
+  "onlineDeployment": "not performed",
+  "userDocumentsIncludedInPackages": false
 }
-
