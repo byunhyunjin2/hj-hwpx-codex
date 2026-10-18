@@ -108,5 +108,10 @@
     "name": "punycode.js",
     "version": "2.3.1",
     "license": "MIT"
+  },
+  {
+    "name": "kordoc (preview renderer)",
+    "version": "4.22.11",
+    "license": "MIT"
   }
 ]

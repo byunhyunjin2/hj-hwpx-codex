@@ -1,5 +1,5 @@
 {
-  "version": "2.0.7",
+  "version": "2.0.8",
   "sourceStructure": {
     "sections": 1,
     "tables": 11,
@@ -15,7 +15,6 @@
       "passed": true,
       "changed": 1,
       "held": 0,
-      "paragraphs": 1,
       "legacySkipped": 0
     },
     {
@@ -23,7 +22,6 @@
       "passed": true,
       "changed": 19,
       "held": 2,
-      "paragraphs": 18,
       "legacySkipped": 0
     },
     {
@@ -31,7 +29,6 @@
       "passed": true,
       "changed": 4,
       "held": 0,
-      "paragraphs": 4,
       "legacySkipped": 1
     },
     {
@@ -39,7 +36,6 @@
       "passed": true,
       "changed": 3,
       "held": 0,
-      "paragraphs": 3,
       "legacySkipped": 1
     },
     {
@@ -47,7 +43,6 @@
       "passed": true,
       "changed": 3,
       "held": 0,
-      "paragraphs": 3,
       "legacySkipped": 2
     },
     {
@@ -55,7 +50,6 @@
       "passed": true,
       "changed": 1,
       "held": 0,
-      "paragraphs": 1,
       "legacySkipped": 1
     },
     {
@@ -76,7 +70,6 @@
       "passed": true,
       "changed": 11,
       "held": 0,
-      "paragraphs": 11,
       "legacySkipped": 0
     },
     {
@@ -84,7 +77,6 @@
       "passed": true,
       "changed": 22,
       "held": 2,
-      "paragraphs": 21,
       "legacySkipped": 1
     }
   ],

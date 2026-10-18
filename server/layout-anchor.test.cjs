@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {hwp5CellAnchorUnpushed}=require('../lib/preview-renderer.cjs');
+assert.equal(hwp5CellAnchorUnpushed(10400,10400),true);
+assert.equal(hwp5CellAnchorUnpushed(24800,24800),true);
+assert.equal(hwp5CellAnchorUnpushed(44065,24800),false);
+assert.equal(hwp5CellAnchorUnpushed(0,undefined),true);
+assert.equal(hwp5CellAnchorUnpushed(1300,undefined),false);
+assert.equal(hwp5CellAnchorUnpushed(0,14800),true);
+assert.equal(hwp5CellAnchorUnpushed(undefined,0),false);
+console.log('PASS: unpushed anchors, genuinely pushed anchors, cell starts, page resets, missing cache');

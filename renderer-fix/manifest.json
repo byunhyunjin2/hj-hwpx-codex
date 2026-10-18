@@ -1,0 +1,13 @@
+{
+  "component": "preview-renderer",
+  "upstream": "kordoc",
+  "upstreamVersion": "4.22.11",
+  "license": "MIT",
+  "changes": [
+    "HWP nested floating table anchors use cached paragraph continuity evidence",
+    "Non-pushed anchors share the same origin in drawing, content extent and split planning",
+    "Picture dimensions and absolute crop bounds preserve full and intentionally cropped images"
+  ],
+  "uiUnchanged": true,
+  "releaseVersion": "2.0.8"
+}

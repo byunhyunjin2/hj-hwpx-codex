@@ -11,7 +11,7 @@ async function main(){
   }catch(error){if(!scenario.expectedError)throw error;assert.equal(error.code,scenario.expectedError);assert(error.location);assert(session.bytes.equals(original));results.push({id:scenario.id,passed:true,blocked:true,code:error.code});}
  }
  core.stage(session,{replacements:[]});const unchanged=await core.verifiedBytes(session);assert(unchanged.data.equals(session.bytes));
- const report={version:'2.0.7',sourceStructure:summary(session.hwpSourceMap),pages:session.pages,scenarios:results,noDocumentFilesWritten:true,originalBytesUnchanged:true};
+ const report={version:require('../plugin.json').version,sourceStructure:summary(session.hwpSourceMap),pages:session.pages,scenarios:results,noDocumentFilesWritten:true,originalBytesUnchanged:true};
  if(reportPath)fs.writeFileSync(path.resolve(reportPath),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 }
 main().catch(error=>{console.error(error.message);process.exitCode=1;});
