@@ -1,6 +1,6 @@
 # hj-hwpx-codex — Codex 플러그인 2.0.6
 
-Windows x64용 Codex 플러그인입니다. Node·kordoc·한컴오피스를 따로 설치하지 않습니다. 필요한 문서 엔진과 실행 파일을 함께 포함했습니다.
+Windows x64용 Codex 플러그인입니다. 필요한 문서 엔진과 실행 파일을 함께 포함했습니다.
 
 ## 설치
 
