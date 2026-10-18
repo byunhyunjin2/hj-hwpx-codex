@@ -1,25 +1,93 @@
 {
-  "version": "1.0.2",
-  "offlineHTML": {
-    "serverClosedTest": "passed",
-    "downloadMatchesValidatedBytes": "passed",
-    "noHwpHwpxSavedBeforeClick": "passed",
-    "selfContainedImages": "passed",
-    "privacyAndIdentifiers": "passed"
+  "version": "2.0.7",
+  "sourceStructure": {
+    "sections": 1,
+    "tables": 11,
+    "topLevelTables": 8,
+    "nestedTables": 3,
+    "paragraphs": 866,
+    "forcedLineBreaks": 24
   },
-  "localMcpSmoke": "passed",
-  "onlineMcp": {
-    "streamableHTTP": "passed",
-    "mcpAppResource": "passed",
-    "uploadInMemory": "passed",
-    "modelOutputRedacted": "passed",
-    "sessionIsolation": "passed",
-    "revisionGuard": "passed",
-    "closeSession": "passed",
-    "originGuard": "passed"
-  },
-  "browserTest": "synthetic MCP Apps bridge harness; compare and review note wrapping passed",
-  "actualChatGPTGeneralChat": "not tested; HTTPS hosting unavailable",
-  "onlineDeployment": "not performed",
-  "userDocumentsIncludedInPackages": false
+  "pages": 12,
+  "scenarios": [
+    {
+      "id": "year-single",
+      "passed": true,
+      "changed": 1,
+      "held": 0,
+      "paragraphs": 1,
+      "legacySkipped": 0
+    },
+    {
+      "id": "year-protected",
+      "passed": true,
+      "changed": 19,
+      "held": 2,
+      "paragraphs": 18,
+      "legacySkipped": 0
+    },
+    {
+      "id": "nested-amount-longer",
+      "passed": true,
+      "changed": 4,
+      "held": 0,
+      "paragraphs": 4,
+      "legacySkipped": 1
+    },
+    {
+      "id": "nested-material-longer",
+      "passed": true,
+      "changed": 3,
+      "held": 0,
+      "paragraphs": 3,
+      "legacySkipped": 1
+    },
+    {
+      "id": "nested-and-wrapped-cell",
+      "passed": true,
+      "changed": 3,
+      "held": 0,
+      "paragraphs": 3,
+      "legacySkipped": 2
+    },
+    {
+      "id": "forced-line-break",
+      "passed": true,
+      "changed": 1,
+      "held": 0,
+      "paragraphs": 1,
+      "legacySkipped": 1
+    },
+    {
+      "id": "field-control-longer-blocked",
+      "passed": true,
+      "blocked": true,
+      "code": "HWP_PARAGRAPH_UNSUPPORTED"
+    },
+    {
+      "id": "explicit-protected-block",
+      "passed": true,
+      "changed": 0,
+      "held": 3,
+      "legacySkipped": 0
+    },
+    {
+      "id": "block-scoped-change",
+      "passed": true,
+      "changed": 11,
+      "held": 0,
+      "paragraphs": 11,
+      "legacySkipped": 0
+    },
+    {
+      "id": "multi-replacement",
+      "passed": true,
+      "changed": 22,
+      "held": 2,
+      "paragraphs": 21,
+      "legacySkipped": 1
+    }
+  ],
+  "noDocumentFilesWritten": true,
+  "originalBytesUnchanged": true
 }

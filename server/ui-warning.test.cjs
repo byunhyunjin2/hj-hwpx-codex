@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict'),vm=require('node:vm'),fs=require('node:fs'),path=require('node:path');
+const ui=require('./ui.cjs');
+const session={sourceName:'화면 확인용 예시.hwp',format:'hwp',pages:1,revision:1,changes:[{count:66}],held:[],blocks:[],plan:{protectedBlockIds:[]},visualCounts:{}};
+const example='<!doctype html><html lang="ko"><style>body{margin:0;font:16px/1.8 sans-serif;background:#eee}.kordoc-page{background:white;margin:auto;width:794px}svg{width:100%}</style><div class="kordoc-page" data-page="1"><svg viewBox="0 0 794 1123"><text x="60" y="100" font-size="26">화면 배치 확인용 예시</text><text x="60" y="150" font-size="16">실제 사용자 문서가 아닙니다.</text></svg></div></html>';
+const error='이 문서의 일부 변경은 원본 형식에서 지원되지 않습니다. 저장을 중단했습니다. '+Array(4).fill('셀 줄 경계 매핑 보호 (문단 내 줄바꿈) — 미지원 · 셀 내 중첩표 수정은 HWP5 미지원 (v1)').join(' · ');
+const snapshot={document:null,error,before:Buffer.from(example).toString('base64'),after:Buffer.from(example).toString('base64'),assets:[]};
+const html=ui(session,'',snapshot),script=html.match(/<script>([\s\S]*)<\/script>/)[1];
+new vm.Script(script);
+const helper=script.slice(script.indexOf('function showDownloadWarning'),script.indexOf('function setConversionProgress'));
+const elements=[];const make=tag=>({tag,children:[],classList:{add(){}},append(child){this.children.push(child)},remove(){}});
+const status=make('p'),header=make('header');
+const document={getElementById:()=>status,querySelector:s=>s==='header'?header:null,createElement:tag=>{const node=make(tag);elements.push(node);return node;}};
+const context=vm.createContext({document});vm.runInContext(helper,context);context.error=error;vm.runInContext('showDownloadWarning(error)',context);
+assert(!status.textContent.includes(' · '));assert.equal(elements.filter(e=>e.tag==='li').length,3);assert.equal(header.children[0].tag,'details');
+assert(html.includes('max-height:40vh'));assert(ui(session,'test-token').includes('showDownloadWarning(e.message,e.diagnostic)'));assert(script.includes('button.disabled=true'));
+const target=path.resolve(__dirname,'../../warning-preview.html');fs.writeFileSync(target,html);console.log('PASS: concise status, deduplicated expandable reasons, header height cap, live/snapshot handlers');console.log(target);
