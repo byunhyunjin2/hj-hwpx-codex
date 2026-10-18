@@ -1,6 +1,6 @@
 ---
 name: hjhwpx
-description: HWP·HWPX 문서를 원본과 나란히 비교하고 변경안은 노란색, 확인 사항은 빨간색으로 표시한다. $hjhwpx 호출, /skills에서 hjhwpx 선택, 또는 한글 문서 미리보기·수정·개인정보 보호·원래 형식 다운로드 요청에 사용한다.
+description: HWP·HWPX 문서를 원본과 나란히 비교하고 변경안은 노란색, 확인 사항은 빨간색으로 표시한다. /hjhwpx, /한글hjhwp 또는 $hjhwpx 메시지를 이 작업 요청으로 처리하며, /skills에서 hjhwpx 선택하거나 한글 문서 미리보기·수정·개인정보 보호·원래 형식 다운로드를 요청할 때 사용한다.
 ---
 
 # hjhwpx
@@ -9,7 +9,7 @@ description: HWP·HWPX 문서를 원본과 나란히 비교하고 변경안은 �
 
 ## 호출
 
-스킬 이름은 `hjhwpx`이다. Codex에서 명시 호출은 `$hjhwpx` 또는 `/skills`에서 `hjhwpx`를 선택하는 것이다. 플러그인 기본 프롬프트도 `$hjhwpx`로 스킬을 명시 호출한다.
+스킬 이름은 `hjhwpx`이다. Codex에서 명시 호출은 `$hjhwpx` 또는 `/skills`에서 `hjhwpx`를 선택하는 것이다. 사용자가 메시지에 `/hjhwpx` 또는 `/한글hjhwp`라고 입력하면 이 작업 요청으로 해석한다. 이 별칭이 호스트의 별도 slash 메뉴로 등록된다고 주장하지 않는다.
 
 ## 작업
 
