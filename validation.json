@@ -1,13 +1,8 @@
 {
-  "version": "2.1.6",
+  "version": "2.1.7",
   "status": "release-source-and-isolated-package-tests-passed",
-  "previousValidationVersion": "2.1.5",
-  "limitations": [
-    "호스트의 실제 Library helper 소스가 현재 제공되지 않아 동일 helper의 실시간 종단 간 검증은 아직 하지 않았습니다.",
-    "시스템 Python을 설치하지 않고 포함 실행기를 사용합니다. Python 언어 자체를 사용하지 않는 구현이라는 뜻은 아닙니다."
-  ],
-  "testGroupsPassed": 11,
-  "gitCheckoutRuntimeIntegrityAndExecutionPassed": true,
+  "previousValidationVersion": "2.1.6",
+  "testGroupsPassed": 12,
   "regressions": {
     "systemPythonNotUsed": true,
     "emptyPath": true,
@@ -18,51 +13,26 @@
     "completionCallbackConfirmedInFixture": true,
     "overwriteFailureTimeoutAndSecretGuards": true,
     "runtimeIntegrityAndModulesChecked": true,
-    "previousDocumentPrivacyAndPreviewGates": true
+    "previousDocumentPrivacyAndPreviewGates": true,
+    "loopbackListenConnectStages": true,
+    "officialApprovalRecovery": true,
+    "pythonIndependentLocalEditorReadiness": true,
+    "singleSkillWithSetupSubcommand": true
   },
   "documentIntegration": {
-    "version": "2.1.6",
-    "passed": true,
-    "systemPythonUsed": false,
-    "systemPathEmpty": true,
-    "pythonEnvironmentPoisoned": true,
-    "helperInvocationContractTested": true,
-    "actualHostLibraryHelperTested": false,
-    "localSourceBytesMatch": true,
-    "libraryIdAndVersionPreserved": true,
-    "completionCallbackConfirmed": true,
-    "changedCount": 89,
-    "heldCount": 0,
-    "unrenderedCount": 0,
-    "pages": 12,
-    "rosterPersonalCellsUnchanged": true,
+    "fixture": "synthetic-hwpx",
+    "originalBytesPreserved": true,
     "originalFormatVerified": true,
-    "htmlOnlyPreview": true,
-    "downloadReady": true,
-    "modifiedDocumentFileWritten": false,
+    "htmlPreviewHttpChecked": true,
+    "actualUserHwpRetested": false,
     "downloadButtonClicked": false
   },
   "packageIntegration": {
-    "version": "2.1.6",
-    "passed": true,
-    "systemPythonUsed": false,
+    "relocatedPathWithKoreanAndSpaces": true,
     "systemPathEmpty": true,
-    "pythonEnvironmentPoisoned": true,
-    "helperInvocationContractTested": true,
+    "bundledNodeAndPython": true,
     "actualHostLibraryHelperTested": false,
-    "localSourceBytesMatch": true,
-    "libraryIdAndVersionPreserved": true,
-    "completionCallbackConfirmed": true,
-    "changedCount": 89,
-    "heldCount": 0,
-    "unrenderedCount": 0,
-    "pages": 12,
-    "rosterPersonalCellsUnchanged": true,
-    "originalFormatVerified": true,
-    "htmlOnlyPreview": true,
-    "downloadReady": true,
-    "modifiedDocumentFileWritten": false,
-    "downloadButtonClicked": false
+    "helperInvocationContractTested": true
   },
   "pythonRuntime": {
     "source": "https://www.python.org/downloads/release/python-3148/",
@@ -70,5 +40,9 @@
     "archiveSha256": "a93abe456ab01bd96d7a085b3cdb6566b3063f4241360d114142fbdb07f0a310",
     "systemInstallRequired": false,
     "registryOrPathChanged": false
-  }
+  },
+  "limitations": [
+    "별도 실물 PC에서 Python을 제거한 시험, 호스트 공식 Library helper의 실시간 연동, 설치 후 실제 호출 메뉴·자연어 setup 라우팅·내부 브라우저 표시는 미검증입니다. 이번 버전에서 실제 사용자 HWP 문서를 다시 시험했다고 주장하지 않습니다. 권한 승인이 없거나 거부되는 호스트에서는 로컬 포트를 강제로 열지 않습니다."
+  ],
+  "validatedAt": "2026-10-19"
 }
