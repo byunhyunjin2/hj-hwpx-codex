@@ -1,5 +1,9 @@
-'use strict';
-const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto');
-const ui=fs.readFileSync(require.resolve('./ui.cjs'));
-assert.equal(crypto.createHash('sha256').update(ui).digest('hex'),'329a5833ca0c29a067d571e3ab429796a4d0a6e2112aad689a22916d83bbf35f');
-console.log('PASS: UI is byte-identical to version 2.0.6');
+const assert=require('node:assert/strict'),vm=require('node:vm'),ui=require('./ui.cjs');
+const session={sourceName:'test.hwp',format:'hwp',pages:2,changes:[],held:[],blocks:[],plan:{protectedBlockIds:[]},warnings:[],revision:2};
+for(const snapshot of [null,{before:'',after:'',document:'AA==',name:'test.hwp'}]){
+ const html=ui(session,'test-token',snapshot);new vm.Script(html.match(/<script>([\s\S]*?)<\/script>/)[1]);
+ for(const id of ['compare','download','page','sync','before','after'])assert(html.includes('id="'+id+'"'));
+ assert.match(html,/frame.clientWidth<40/);assert.match(html,/function settle\(p\)/);
+ assert.match(html,/onchange=e=>settle/);assert.match(html,/previousElementSibling/);
+}
+console.log('PASS: live/snapshot controls, scripts, hidden-pane and page-position guards');

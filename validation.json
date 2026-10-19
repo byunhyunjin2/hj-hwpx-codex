@@ -1,23 +1,31 @@
 {
-  "version": "2.1.4",
-  "status": "source-tests-passed",
+  "version": "2.1.5",
+  "status": "release-tests-passed",
   "regressions": {
-    "originalTableStructure": true,
-    "unchangedReviewUI": true,
-    "layoutAnchors": true,
-    "pictureViewport": true,
-    "reviewNotesAndDateValidation": true,
-    "firstRunPathsAndDiagnostics": true,
-    "portableAndCompatibilityLaunchParity": true,
-    "mcpInitializationAndFourTools": true,
-    "missingRuntimeDetected": true,
-    "localAttachmentsOnly": true,
-    "remoteReferencesRejected": true,
-    "networkSharePathsRejected": true,
-    "startupDiagnosticCalledBeforeAttachment": true
+    "existingLayoutAndUi": true,
+    "originalPrivacyAndDateChecks": true,
+    "stagingRequiredPreservesReference": true,
+    "missingAndExpiredHostPaths": true,
+    "mcpAndCliAttachmentReceipts": true,
+    "stagedTemporaryExtension": true,
+    "syntheticHwpxModificationAndPreview": true,
+    "originalDownloadExtension": true,
+    "extensionMismatchBlocked": true,
+    "arbitraryUrlAndNetworkSharesBlocked": true,
+    "noAutomaticDocumentDownload": true,
+    "rosterOperationalFieldsEditable": true,
+    "rosterPersonalRowsAndExplicitProtectionPreserved": true,
+    "cellBoundaryPreviewFit": true,
+    "wrappedHighlightPreserved": true,
+    "pageNavigationStabilized": true,
+    "explicitHwpLineBreakControls": true,
+    "runtimePackageIdentity": true,
+    "identityContainsNoDocumentContentsOrPaths": true,
+    "htmlReviewOnlyPresentation": true,
+    "noOriginalAttachmentViewerInOpenOrUpdate": true
   },
   "documentIntegration": {
-    "version": "2.1.4",
+    "version": "2.1.5",
     "passed": true,
     "isolatedLaunch": {
       "cwdOutsidePlugin": true,
@@ -25,18 +33,49 @@
       "emptyPath": true
     },
     "sourcePages": 12,
-    "changedCount": 3,
+    "changedCount": 89,
+    "attachmentReceiptUsed": true,
+    "originalExtensionRetained": true,
     "httpPreview": true,
     "sameMemorySession": true,
     "staleRevisionBlocked": true,
     "agentExportBlocked": true,
     "unauthorizedDownloadBlocked": true,
     "sourceHashUnchanged": true,
-    "noDocumentFileWritten": true
+    "noDocumentFileWritten": true,
+    "heldCount": 0,
+    "unrenderedCount": 0,
+    "savedDataReparsed": true,
+    "savedDataRenderedPages": 12,
+    "rosterMetadataUpdated": true,
+    "rosterPersonalCellsUnchanged": true
   },
   "limitations": [
-    "호스트가 새 설치 후 도구를 자동 등록하고 Setup을 호출하는지는 이 서버 검사로 보증하지 않습니다.",
-    "다른 실제 PC에서 설치한 결과를 의미하지 않습니다. 패키지를 다른 경로에 풀어 빈 PATH로 검사합니다.",
-    "호스트 첨부 전달 또는 브라우저 접근 정책을 플러그인이 강제 변경하지 않습니다."
-  ]
+    "다른 실제 Windows PC의 신규 ChatGPT 설치·도구 자동 등록은 시험하지 않았습니다.",
+    "현재 호스트의 공식 첨부 전달 도구를 직접 호출할 수 없어 그 실제 전달은 미검증입니다. 동일 첨부 전달 정보와 임시 경로·만료·확장명 처리는 회귀 검사했습니다.",
+    "사용자 대신 다운로드하지 않았습니다. 메모리의 원래 형식 데이터를 재파싱·재렌더링했으며, 디스크에 저장한 다운로드 파일을 한컴에서 여는 단계는 미검증입니다.",
+    "다른 PC의 스크린샷만으로 그 PC의 실행 버전·선택된 스킬·첨부 전달 도구 호출을 확정할 수 없습니다.",
+    "원본 뷰어 자동 열기는 플러그인 지침·도구 응답에서 금지합니다. 사용자가 첨부 카드를 눌러 여는 호스트 자체 뷰어를 비활성화하는 기능은 아닙니다."
+  ],
+  "testGroupsPassed": 10,
+  "browserChecks": {
+    "changedTextContainersChecked": 76,
+    "cellWidthOverflows": 0,
+    "yellowRuns": 88,
+    "yellowRectangles": 88,
+    "redRuns": 6,
+    "wrappedTextContainers": 2,
+    "fittedTextContainers": 10,
+    "pageSelectionChecked": [
+      2,
+      3,
+      6,
+      7,
+      12
+    ],
+    "compareToggleKeepsPage": true,
+    "standaloneHtmlReady100Percent": true,
+    "liveAndStandalonePreviewInspected": true,
+    "savedHwpDataRerenderedWithoutVenueOverlap": true
+  }
 }

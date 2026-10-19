@@ -2,10 +2,10 @@
 const fs=require('node:fs'),readline=require('node:readline');
 const {createService}=require('./service.cjs');
 async function main(){
- const file=process.argv[2],outputDirectory=process.argv[3];if(!file||!outputDirectory)throw Error('사용법: node main.cjs 문서절대경로 결과폴더절대경로 [계획JSON]');
+ const receiptMode=process.argv[2]==='--attachment',file=receiptMode?JSON.parse(fs.readFileSync(process.argv[3],'utf8')):process.argv[2],outputDirectory=process.argv[receiptMode?4:3],planPath=process.argv[receiptMode?5:4];if(!file||!outputDirectory)throw Error('사용법: node main.cjs 문서절대경로 결과폴더절대경로 [계획JSON] 또는 main.cjs --attachment 첨부전달정보JSON 결과폴더 [계획JSON]');
  const service=await createService();
  try{
-  const plan=process.argv[4]?JSON.parse(fs.readFileSync(process.argv[4],'utf8')):{replacements:[]};
+  const plan=planPath?JSON.parse(fs.readFileSync(planPath,'utf8')):{replacements:[]};
   const opened=await service.open({file,outputDirectory,plan});console.log(JSON.stringify(opened));
   // Inspect/update the same in-memory source when the host has no registered MCP tools.
   let queue=Promise.resolve();const input=readline.createInterface({input:process.stdin,crlfDelay:Infinity});
@@ -23,4 +23,4 @@ async function main(){
   });});
  }catch(e){service.server.close();throw e;}
 }
-main().catch(e=>{console.error(JSON.stringify({code:e.code||'PREVIEW_START_FAILED',stage:e.stage||'preview',message:e.message,nextAction:e.nextAction||'로컬 실행·포트와 변경 계획을 확인하세요.'}));process.exitCode=1});
+main().catch(e=>{console.error(JSON.stringify({code:e.code||'PREVIEW_START_FAILED',stage:e.stage||'preview',message:e.message,attachment:e.attachment,nextAction:e.nextAction||'로컬 실행·포트와 변경 계획을 확인하세요.'}));process.exitCode=1});

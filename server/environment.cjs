@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),net=require('node:net');
 const {resolveAttachment}=require('./attachment.cjs');
+const {packageIdentity}=require('./identity.cjs');
 const root=path.resolve(__dirname,'..');
 async function checkEnvironment({files=[]}={}){
  if(!Array.isArray(files)||files.length>10||files.some(f=>typeof f!=='string'))throw Error('files는 호스트가 제공한 파일 경로 10개 이하로 지정하세요.');
@@ -22,6 +23,6 @@ async function checkEnvironment({files=[]}={}){
   });
  });
  const ready=process.platform==='win32'&&process.arch==='x64'&&!missing.length&&loopback.available;
- return {version:require('../plugin.json').version,platform:process.platform,arch:process.arch,ready,missing,loopback,attachments,attachmentContentsRead:false,networkDownloadAttempted:false,hostToolRegistration:'not-verifiable-from-server',fallbackEntry:'server/main.cjs',nextAction:ready?'첨부가 있으면 현재 수정 작업을 계속하고 previewUrl을 내부 브라우저로 여세요.':'Windows x64 로컬 실행과 패키지 파일 및 로컬 포트 상태를 확인하세요.'};
+ return {version:require('../plugin.json').version,identity:packageIdentity(),platform:process.platform,arch:process.arch,ready,missing,loopback,attachments,attachmentContentsRead:false,networkDownloadAttempted:false,hostToolRegistration:'not-verifiable-from-server',fallbackEntry:'server/main.cjs',nextAction:ready?'첨부가 있으면 현재 수정 작업을 계속하고 previewUrl을 내부 브라우저로 여세요.':'Windows x64 로컬 실행과 패키지 파일 및 로컬 포트 상태를 확인하세요.'};
 }
 module.exports={checkEnvironment};

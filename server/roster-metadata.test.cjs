@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('node:assert/strict'),core=require('./core.cjs'),roster=require('./roster-metadata.cjs');
+const md='<table><tr><th colspan="3">2026 행사 참석자 명단</th></tr><tr><td>교육 기간</td><td colspan="2">2026. 10. 31.(토)</td></tr><tr><td>참여 인원</td><td colspan="2">35명</td></tr><tr><td>학번</td><td>이름</td><td>비고</td></tr><tr><td>202611035</td><td>보호 대상</td><td>변경 금지</td></tr></table>';
+const fields=roster.fields(md);assert.equal(fields.length,3);assert.deepEqual(fields.map(f=>[f.row,f.col]),[[0,0],[1,1],[2,1]]);
+const texts=['2026 행사 참석자 명단','교육 기간','2026. 10. 31.(토)','참여 인원','35명','학번','이름','비고','202611035','보호 대상','변경 금지'];
+const before='<html><head><style></style></head><body><div class="kordoc-page" data-page="1"><svg xmlns="http://www.w3.org/2000/svg"><g data-kordoc-type="table">'+texts.map(t=>'<g data-kordoc-type="paragraph"><text>'+t+'</text></g>').join('')+'</g></svg></div></body></html>';
+const block={...core.splitBlocks(md)[0],protected:true,normalized:md.replace(/<[^>]*>|\s/g,'')};
+const session={markdown:md,blocks:[block],before,pages:1,warnings:[],revision:0};
+const result=core.stage(session,{replacements:[{from:'2026 행사',to:'2027 행사'},{from:'2026. 10. 31.(토)',to:'2027. 01. 01.(금)'},{from:'35명',to:'82명'}]});
+assert.equal(result.changedCount,3);assert.match(session.revised,/202611035/);assert.match(session.revised,/보호 대상/);assert.match(session.revised,/82명/);
+const explicit=core.stage({...session},{replacements:[{from:'35명',to:'82명'}],protectedBlockIds:['b1']});assert.equal(explicit.changedCount,0);assert.equal(explicit.heldCount,1);
+const attempted=core.stage({...session},{replacements:[{from:'202611035',to:'202711082'},{from:'보호 대상',to:'다른 사람'},{from:'변경 금지',to:'변경 시도'}]});assert.equal(attempted.changedCount,0);assert.equal(attempted.heldCount,3);
+assert.equal(roster.fields('<table><tr><td>교육 기간</td><td>2026</td></tr></table>').length,0);
+console.log('PASS: roster operational cells, identifying rows and explicit protection');
