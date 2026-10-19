@@ -1,5 +1,5 @@
 'use strict';
-const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),cp=require('node:child_process');
 const {resolveChatAttachment}=require('./attachment.cjs'),core=require('./core.cjs'),engine=require('../lib/engine.cjs');
 const {createService}=require('./service.cjs');
 async function main(){
@@ -23,14 +23,16 @@ async function main(){
   core.stage(session,{replacements:[{from:'2026',to:'2027',expectedCount:1}]});
   const patched=await core.verifiedBytes(session);assert.equal(patched.data.subarray(0,2).toString(),'PK');assert((await engine.parseHwpx(patched.data,{layoutTables:'keep',ocr:false})).markdown.includes('2027'));
   const service=await createService();
-  try{
-   const opened=await service.open({attachment:receipt,outputDirectory:temp,plan:{replacements:[{from:'2026',to:'2027',expectedCount:1}]}});
+  const opened=await service.open({attachment:receipt,outputDirectory:temp,plan:{replacements:[{from:'2026',to:'2027',expectedCount:1}]}});
    assert.equal(opened.sourceName,selected.name);assert.equal(opened.attachmentReferenceId,selected.referenceId);assert.equal(opened.format,'hwpx');assert(opened.downloadReady);
-   assert.deepEqual(opened.previewTarget,{type:'browser',url:opened.previewUrl});assert.deepEqual(opened.presentation,{kind:'html-review-only',openOriginalAttachment:false});
-   const updated=await service.update({sessionId:opened.sessionId,expectedRevision:opened.revision,plan:{replacements:[{from:'2026',to:'2027',expectedCount:1}]}});assert.deepEqual(updated.previewTarget,{type:'browser',url:updated.previewUrl});assert.equal(updated.presentation.openOriginalAttachment,false);
-   const html=await (await fetch(opened.previewUrl)).text();assert.match(html,/다운로드 · HWPX/);
-   assert.match(fs.readFileSync(opened.previewPath,'utf8'),/검토반영_r\d+\.hwpx/);
-  }finally{await new Promise(resolve=>service.server.close(resolve));}
+   assert.equal(opened.previewKind,'self-contained-html');assert(!opened.previewUrl);assert(!opened.previewTarget);assert.deepEqual(opened.presentation,{kind:'html-review-only',openOriginalAttachment:false});
+   const updated=await service.update({sessionId:opened.sessionId,expectedRevision:opened.revision,plan:{replacements:[{from:'2026',to:'2027',expectedCount:1}]}});assert.equal(updated.previewKind,'self-contained-html');assert(!updated.previewUrl);assert(!updated.previewTarget);assert.equal(updated.presentation.openOriginalAttachment,false);
+   const html=fs.readFileSync(updated.previewPath,'utf8');assert.match(html,/다운로드 · HWPX/);assert.match(html,/iframe/);assert.match(html,/비교보기/);assert.match(html,/함께 스크롤/);assert(!html.includes('fetch('));
+   const embedded=JSON.parse(html.match(/const snapshot=(\{.*?\});\s*const bytes/s)[1]);const before=Buffer.from(embedded.before,'base64').toString(),after=Buffer.from(embedded.after,'base64').toString();assert.match(before,/2026/);assert.match(after,/2027/);assert.match(after,/change-mark/);assert(embedded.document);
+   assert.match(html,/검토반영_r\d+\.hwpx/);assert.notEqual(opened.previewPath,updated.previewPath);
+  const receiptPath=path.join(temp,'attachment-receipt.json');fs.writeFileSync(receiptPath,JSON.stringify(receipt));
+  const cli=cp.spawnSync(path.resolve(__dirname,'../runtime/win32-x64/node.exe'),[path.resolve(__dirname,'main.cjs'),'--attachment',receiptPath,temp],{input:JSON.stringify({id:1,method:'shutdown'})+'\n',encoding:'utf8',windowsHide:true,timeout:30000});
+  assert.equal(cli.status,0,cli.stderr);const cliResult=JSON.parse(cli.stdout.trim().split(/\r?\n/)[0]);assert.equal(cliResult.previewKind,'self-contained-html');assert(!cliResult.previewUrl);assert(fs.existsSync(cliResult.previewPath));assert.match(fs.readFileSync(cliResult.previewPath,'utf8'),/다운로드 · HWPX/);
   assert(fs.readFileSync(staged).equals(bytes));
   await assert.rejects(()=>core.openDocument({...receipt,name:'잘못된 확장명.hwp'},temp),e=>e.code==='ATTACHMENT_EXTENSION_MISMATCH');
   assert(!fs.readdirSync(temp).some(n=>/\.(hwp|hwpx)$/i.test(n)));

@@ -16,11 +16,11 @@ async function main(){
     request=JSON.parse(line);let result;
     if(request.method==='inspect')result=service.inspect({sessionId:opened.sessionId,offset:request.offset,limit:request.limit});
     else if(request.method==='update')result=await service.update({sessionId:opened.sessionId,expectedRevision:request.expectedRevision,plan:request.plan});
-    else if(request.method==='shutdown'){input.close();service.server.close();result={closed:true};}
+    else if(request.method==='shutdown'){input.close();result={closed:true};}
     else throw Error('지원되는 명령은 inspect, update, shutdown입니다.');
     console.log(JSON.stringify({id:request.id,result}));
    }catch(e){console.log(JSON.stringify({id:request?.id,error:{code:e.code||'REVIEW_FAILED',stage:e.stage||'review',message:e.message,nextAction:e.nextAction}}));}
   });});
- }catch(e){service.server.close();throw e;}
+ }catch(e){throw e;}
 }
 main().catch(e=>{console.error(JSON.stringify({code:e.code||'PREVIEW_START_FAILED',stage:e.stage||'preview',message:e.message,attachment:e.attachment,nextAction:e.nextAction||'로컬 실행·포트와 변경 계획을 확인하세요.'}));process.exitCode=1});

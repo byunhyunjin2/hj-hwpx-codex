@@ -20,4 +20,22 @@ assert.throws(()=>core.stage({...session,revision:0},{replacements:[{...base.rep
 assert.throws(()=>core.stage({...session,revision:0},{replacements:[{...base.replacements[0],to:'2027.12.12.(일)'}]}),/표기 형식/);
 assert.throws(()=>core.stage({...session,revision:0},{replacements:[{from:'2026',to:'2027'}]}),/전체 날짜/);
 assert.throws(()=>core.stage({...session,revision:0},{reviewNotes:[{page:1,targetText:'별도 안내',text:'다른 쪽 내용 확인'}]}),/한 곳으로 특정/);
+
+const privateMarkdown='개인정보동의: 주민등록번호 원문 확인';
+const privateBlocks=core.splitBlocks(privateMarkdown).map(b=>({...b,protected:core.privacy(b.text),normalized:b.text.replace(/\s/g,'')}));
+const privateSession={id:'private-review-test',format:'hwpx',markdown:privateMarkdown,blocks:privateBlocks,before:`<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="style-src 'unsafe-inline';"><style>body{}</style></head><body>${page(1,'<tspan>개인정보동의: </tspan><tspan>주민등록번호 원문 확인</tspan>')}<div id="toolbar"></div></body></html>`,pages:1,warnings:[],revision:0};
+core.stage(privateSession,{replacements:[]});
+assert.match(privateSession.after,/<tspan class="review-mark" fill="#b91c1c"><title>확인 필요 · 개인정보 포함 문단 원문 확인<\/title><tspan>개인정보동의: <\/tspan><tspan>주민등록번호 원문 확인<\/tspan><\/tspan>/);
+assert.match(privateSession.after,/개인정보·이력서·식별번호: 원래 값 유지/);
+
+const contactMarkdown='담당자: 홍길동 (02-1234-5678, example@example.com)\n주소: 서울시 테스트로 1';
+const contactBlock=core.splitBlocks(contactMarkdown).map(b=>({...b,protected:core.privacy(b.text),normalized:b.text.replace(/\s/g,'')}));
+assert.equal(contactBlock.length,1);
+assert.equal(contactBlock[0].protected,true);
+assert.equal(core.privacy('전화 053-123-4567'),true);
+assert.equal(core.privacy('예시 example@example.com'),true);
+const contactSession={id:'contact-review-test',format:'hwpx',markdown:contactMarkdown,blocks:contactBlock,before:`<!doctype html><html><head><meta http-equiv="Content-Security-Policy" content="style-src 'unsafe-inline';"><style>body{}</style></head><body>${page(1,'<tspan>담당자: 홍길동 (02-1234-5678, example@example.com)</tspan>')}<div id="toolbar"></div></body></html>`,pages:1,warnings:[],revision:0};
+core.stage(contactSession,{replacements:[]});
+assert.match(contactSession.after,/<tspan class="review-mark" fill="#b91c1c"><title>확인 필요 · 개인정보 포함 문단 원문 확인<\/title><tspan>담당자: 홍길동 \(02-1234-5678, example@example\.com\)<\/tspan><\/tspan>/);
+assert.match(contactSession.after,/확인 필요/);
 console.log('PASS: page-specific notes, exact red target mark, date style and weekday checks');

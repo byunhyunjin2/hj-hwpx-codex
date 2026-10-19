@@ -16,7 +16,7 @@ async function main(){
   try{assert.throws(()=>resolveAttachment(file),e=>e.code==='ATTACHMENT_ACCESS_DENIED');}finally{fs.accessSync=denied;}
   const read=fs.readFileSync;fs.readFileSync=(f,...args)=>{assert.notEqual(f,file,'진단은 본문을 읽으면 안 됩니다.');return read(f,...args);};
   let health;try{health=await checkEnvironment({files:[file,path.join(temp,'missing.hwp')]});}finally{fs.readFileSync=read;}
-  assert.equal(health.ready,process.platform==='win32'&&process.arch==='x64');assert.deepEqual(health.missing,[]);assert(health.loopback.available);assert(health.attachmentHelperRuntime.ready);assert.equal(health.attachmentHelperRuntime.systemPythonUsed,false);assert.equal(health.attachmentHelperRuntime.separateInstallRequired,false);
+  assert.equal(health.ready,process.platform==='win32'&&process.arch==='x64');assert.deepEqual(health.missing,[]);assert.equal(health.previewMode,'self-contained-html');assert(!('loopback' in health));assert(health.attachmentHelperRuntime.ready);assert.equal(health.attachmentHelperRuntime.systemPythonUsed,false);assert.equal(health.attachmentHelperRuntime.separateInstallRequired,false);
   assert(health.attachments[0].available);assert.equal(health.attachments[1].code,'ATTACHMENT_UNAVAILABLE');assert.equal(health.attachmentContentsRead,false);assert.equal(health.networkDownloadAttempted,false);
   assert.equal(health.hostToolRegistration,'not-verifiable-from-server');
   assert.equal(health.identity.version,require('../plugin.json').version);assert.match(health.identity.installedFilesSha256,/^[a-f0-9]{64}$/);assert.match(health.identity.skillSha256,/^[a-f0-9]{64}$/);assert.equal(health.identity.attachmentPolicy,'same-attachment-host-staging-allowed');assert.equal(health.identity.hostSelectedSkill,'not-verifiable-from-server');assert(!JSON.stringify(health.identity).includes(temp));
@@ -38,7 +38,7 @@ async function main(){
   const receiptFile=path.join(temp,'pending-attachment.json');fs.writeFileSync(receiptFile,JSON.stringify({name:'현재 첨부.hwp',referenceId:'file_cli_attachment'}));
   const cli=cp.spawnSync(process.execPath,[path.join(root,'server/main.cjs'),'--attachment',receiptFile,temp],{encoding:'utf8',timeout:15000,windowsHide:true});
   assert.equal(cli.status,1);const cliError=JSON.parse(cli.stderr.trim());assert.equal(cliError.code,'ATTACHMENT_STAGING_REQUIRED');assert.equal(cliError.attachment.referenceId,'file_cli_attachment');
-  console.log('PASS: first-run paths, file URLs, missing/denied/remote attachments, content-free diagnostics, onboarding, portable/compat launch parity, MCP/CLI staging identity and structured recovery');
+  console.log('PASS: first-run paths, independent HTML preview diagnostics, missing/denied/remote attachments, onboarding, portable/compat launch parity, MCP/CLI staging identity and structured recovery');
  }finally{assert(path.resolve(temp).startsWith(path.resolve(os.tmpdir())+path.sep));assert(path.basename(temp).startsWith('hjhwpx-first-run-'));fs.rmSync(temp,{recursive:true,force:true});}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

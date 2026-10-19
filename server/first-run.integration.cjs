@@ -14,7 +14,7 @@ async function main(){
  const next=()=>replies.length?Promise.resolve(replies.shift()):new Promise((resolve,reject)=>{if(closed)return reject(Error(stderr));const timer=setTimeout(()=>reject(Error('준비 시간 초과: '+stderr)),45000);pending.push({resolve:r=>{clearTimeout(timer);resolve(r);},reject:e=>{clearTimeout(timer);reject(e);}});});
  const send=async r=>{child.stdin.write(JSON.stringify(r)+'\n');return next();};
  try{
-  const opened=await next();assert.match(opened.previewUrl,/^http:\/\/127\.0\.0\.1:\d+\/review\/[a-f0-9]+\/$/);assert(opened.downloadReady);assert(!opened.documentSaved);
+  const opened=await next();assert.equal(opened.previewKind,'self-contained-html');assert(opened.previewPath.endsWith('.html'));assert(!opened.previewUrl);assert(!opened.previewTarget);assert(opened.downloadReady);assert(!opened.documentSaved);
   if(receipt){assert.equal(opened.sourceName,receipt.name);assert.equal(opened.attachmentReferenceId,receipt.referenceId);}
   assert.equal('.'+opened.format,path.extname(receipt?.name||file).toLowerCase());
   const inspected=await send({id:1,method:'inspect',offset:0,limit:7});assert(inspected.result.blocks.length>0);
@@ -23,16 +23,13 @@ async function main(){
   assert(!updated.error,JSON.stringify(updated.error));assert.equal(updated.result.changedCount,+(process.env.HJHWPX_EXPECT_CHANGES||3));assert(updated.result.downloadReady);
   const stale=await send({id:3,method:'update',expectedRevision:opened.revision,plan:{replacements:[]}});assert(stale.error);
   const forbidden=await send({id:4,method:'export'});assert(forbidden.error);
-  const response=await fetch(opened.previewUrl);assert.equal(response.status,200);const html=await response.text();assert.match(html,/iframe/);assert.match(html,/다운로드/);
-  const after=await (await fetch(opened.previewUrl+'after')).text();assert.match(after,/2027/);assert.match(after,/change-mark/);
-  const before=await (await fetch(opened.previewUrl+'before')).text();assert.match(before,/2026/);
-  const rejected=await fetch(opened.previewUrl+'export',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({revision:updated.result.revision})});assert.equal(rejected.status,403);
+  const html=fs.readFileSync(updated.result.previewPath,'utf8');assert.match(html,/iframe/);assert.match(html,/다운로드/);assert.match(html,/비교보기/);assert.match(html,/함께 스크롤/);assert.match(html,/2027/);assert.match(html,/change-mark/);assert(!html.includes('fetch('));
   assert.equal(crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'),originalHash);
   assert(!fs.readdirSync(out).some(f=>/\.(hwp|hwpx)$/i.test(f)));
-  const report={version:require(path.join(root,'plugin.json')).version,passed:true,isolatedLaunch:{cwdOutsidePlugin:true,systemNodeNotUsed:true,emptyPath:true},sourcePages:opened.pageCount,changedCount:updated.result.changedCount,attachmentReceiptUsed:!!receipt,originalExtensionRetained:true,httpPreview:true,sameMemorySession:true,staleRevisionBlocked:true,agentExportBlocked:true,unauthorizedDownloadBlocked:true,sourceHashUnchanged:true,noDocumentFileWritten:true,previewUrl:opened.previewUrl};
+  const report={version:require(path.join(root,'plugin.json')).version,passed:true,isolatedLaunch:{cwdOutsidePlugin:true,systemNodeNotUsed:true,emptyPath:true},sourcePages:opened.pageCount,changedCount:updated.result.changedCount,attachmentReceiptUsed:!!receipt,originalExtensionRetained:true,selfContainedHtmlPreview:true,loopbackNotUsed:true,sameMemorySession:true,staleRevisionBlocked:true,agentExportBlocked:true,downloadRequiresUserClick:true,sourceHashUnchanged:true,noDocumentFileWritten:true,previewPath:updated.result.previewPath};
   fs.writeFileSync(path.join(out,'integration-result.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
   if(process.env.HJHWPX_KEEP_PREVIEW==='1'){
-   console.log('미리보기 확인용 서버 유지 중');
+   console.log('독립 HTML 파일을 생성하고 세션 검토 입력을 기다리는 중');
    process.on('SIGINT',()=>{child.stdin.write(JSON.stringify({method:'shutdown'})+'\n');child.stdin.end();});
    return;
   }
