@@ -1,0 +1,25 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),http=require('node:http'),cp=require('node:child_process'),crypto=require('node:crypto');
+const {helperCode}=require('./library-runtime.test.cjs');
+async function main(){
+ const [source,outArg,pluginArg,planArg]=process.argv.slice(2);if(!source||!outArg||!pluginArg||!planArg)throw Error('원본·결과폴더·패키지루트·계획 JSON 경로가 필요합니다.');
+ const out=path.resolve(outArg),root=path.resolve(pluginArg),runtime=path.join(root,'runtime/win32-x64/node.exe'),input=path.join(out,'input'),profile=path.join(out,'empty-profile');fs.mkdirSync(input,{recursive:true});fs.mkdirSync(profile,{recursive:true});
+ const original=fs.readFileSync(source),hash=data=>crypto.createHash('sha256').update(data).digest('hex');let completed=false,server;
+ try{
+  server=http.createServer(async(req,res)=>{if(req.url==='/attachment'){res.end(original);return;}if(req.url==='/complete'){let body='';for await(const b of req)body+=b;const report=JSON.parse(body);assert.equal(report.library_file_id,'libfile_local_contract_test');assert.equal(report.sha256,hash(original));completed=true;res.end('{}');return;}res.writeHead(404);res.end();});await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+  const origin='http://127.0.0.1:'+server.address().port,helper=path.join(out,'host-helper-contract-fixture.py'),transfer=path.join(out,'transfer.json'),local=path.join(input,'source.hwp');fs.writeFileSync(helper,helperCode);
+  fs.writeFileSync(transfer,JSON.stringify({library_file_id:'libfile_local_contract_test',current_version_number:0,download_url:origin+'/attachment',completion_url:origin+'/complete',completion_token:'test-token-not-real'}));
+  const env={...process.env,PATH:'',NODE_PATH:'',NODE_OPTIONS:'',PYTHONHOME:path.join(out,'nonexistent-python'),PYTHONPATH:path.join(out,'nonexistent-modules'),USERPROFILE:profile,APPDATA:path.join(profile,'AppData/Roaming'),LOCALAPPDATA:path.join(profile,'AppData/Local')};delete env.CODEX_HOME;
+  const run=await new Promise((resolve,reject)=>{const child=cp.spawn(runtime,[path.join(root,'scripts/library-transfer.cjs'),'--helper',helper,'--transfer-json',transfer,'--output',local],{env,cwd:out,windowsHide:true,stdio:['ignore','pipe','pipe']});let stdout='',stderr='';child.stdout.on('data',b=>stdout+=b);child.stderr.on('data',b=>stderr+=b);child.on('error',reject);child.on('close',status=>resolve({status,stdout,stderr}));});assert.equal(run.status,0,run.stderr);assert(completed);assert(fs.readFileSync(local).equals(original));
+  const metadata=JSON.parse(fs.readFileSync(local+'.library.json','utf8'));assert.equal(metadata.library_file_id,'libfile_local_contract_test');assert.equal(metadata.current_version_number,0);assert.equal(metadata.sha256,hash(original));
+  const {createService}=require(path.join(root,'server/service.cjs')),core=require(path.join(root,'server/core.cjs')),roster=require(path.join(root,'server/roster-metadata.cjs')),service=await createService();
+  try{
+   const result=await service.open({attachment:{name:path.basename(source),referenceId:metadata.library_file_id,localPath:local},outputDirectory:path.join(out,'review'),plan:JSON.parse(fs.readFileSync(planArg,'utf8'))});
+   assert.equal(result.changedCount,89);assert.equal(result.heldCount,0);assert.equal(result.unrenderedCount,0);assert.equal(result.pageCount,12);assert.equal(result.format,'hwp');assert(result.downloadReady);assert.equal(result.presentation.openOriginalAttachment,false);assert.equal(result.previewTarget.type,'browser');
+   const session=service.sessions.get(result.sessionId),verified=await core.verifiedBytes(session);const originalRoster=session.blocks.find(b=>b.id==='b11').text,revisedRoster=core.splitBlocks(session.revised).find(b=>b.id==='b11').text;assert.equal(roster.transform(originalRoster,()=>''),roster.transform(revisedRoster,()=>''));assert.equal(hash(session.bytes),hash(original));assert.equal(verified.data.subarray(0,8).toString('hex'),'d0cf11e0a1b11ae1');
+   const response=await fetch(result.previewUrl);assert.equal(response.status,200);assert.match(await response.text(),/다운로드 · HWP/);
+   const report={version:require(path.join(root,'plugin.json')).version,passed:true,systemPythonUsed:false,systemPathEmpty:true,pythonEnvironmentPoisoned:true,helperInvocationContractTested:true,actualHostLibraryHelperTested:false,localSourceBytesMatch:true,libraryIdAndVersionPreserved:true,completionCallbackConfirmed:true,changedCount:result.changedCount,heldCount:result.heldCount,unrenderedCount:result.unrenderedCount,pages:result.pageCount,rosterPersonalCellsUnchanged:true,originalFormatVerified:true,htmlOnlyPreview:true,downloadReady:true,modifiedDocumentFileWritten:false,downloadButtonClicked:false};fs.writeFileSync(path.join(out,'integration-result.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
+  }finally{await new Promise(resolve=>service.server.close(resolve));}
+ }finally{if(server)await new Promise(resolve=>server.close(resolve));}
+}
+main().catch(e=>{console.error(e.stack);process.exitCode=1;});

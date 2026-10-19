@@ -6,3 +6,5 @@ private-review/
 node_modules/
 .renderer-build/
 outputs/
+
+!runtime/python-win32-x64/python314.zip

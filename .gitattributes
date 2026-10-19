@@ -1,0 +1,3 @@
+# Preserve vendor runtime bytes used by the integrity manifest on every checkout.
+runtime/python-win32-x64/** -text -whitespace
+licenses/python.txt -text -whitespace

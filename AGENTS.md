@@ -27,3 +27,8 @@
 
 - 플러그인이 자동으로 여는 대상은 생성된 HTML 검토 화면뿐이다. HWP/HWPX 원본 첨부를 파일 뷰어로 열지 않는다. HTML 내부의 변경 전·후 비교는 유지한다. 사용자가 직접 첨부 카드를 눌러 여는 호스트 기본 뷰어를 차단했다고 주장하지 않는다.
 - GitHub Release 제목은 `hj-hwpx-codex 2.1.5`처럼 플러그인명과 버전을 쓴다. 사용자에게는 `[**v2.1.5 hj-hwpx-codex 2.1.5**](릴리즈 URL)` 형식으로 링크를 보고한다. 이후 버전에도 같은 형식을 사용한다.
+
+## Library 전달의 Python 의존성
+
+- 사용자 PC의 Python 설치·py·WindowsApps 실행 별칭·시스템 PATH를 전제로 하지 않는다. 공식 Library helper가 필요하면 포함 Node의 `scripts/library-transfer.cjs`로 포함 Python을 격리·UTF-8 모드로 실행한다.
+- 공식 helper 원문과 Library 식별자·현재 버전·완료 보고 규약을 그대로 유지한다. 임의 URL 다운로드나 메타데이터 생략으로 대체하지 않는다. helper 계약 재현 시험과 호스트 공식 helper의 실제 연동 시험을 구분해서 보고한다.

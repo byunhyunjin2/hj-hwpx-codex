@@ -2,10 +2,11 @@
 const fs=require('node:fs'),path=require('node:path'),net=require('node:net');
 const {resolveAttachment}=require('./attachment.cjs');
 const {packageIdentity}=require('./identity.cjs');
+const {checkLibraryRuntime}=require('./library-runtime.cjs');
 const root=path.resolve(__dirname,'..');
 async function checkEnvironment({files=[]}={}){
  if(!Array.isArray(files)||files.length>10||files.some(f=>typeof f!=='string'))throw Error('files는 호스트가 제공한 파일 경로 10개 이하로 지정하세요.');
- const required=['runtime/win32-x64/node.exe','lib/engine.cjs','lib/preview-renderer.cjs','server/main.cjs','server/mcp.cjs','skills/hjhwpx/SKILL.md'];
+ const required=['runtime/win32-x64/node.exe','lib/engine.cjs','lib/preview-renderer.cjs','server/main.cjs','server/mcp.cjs','skills/hjhwpx/SKILL.md','runtime/python-runtime.json','runtime/python-win32-x64/python.exe','scripts/library-transfer.cjs'];
  const missing=required.filter(f=>!fs.existsSync(path.join(root,f)));
  const attachments=files.map(file=>{try{resolveAttachment(file);return {available:true};}catch(e){return {available:false,code:e.code,stage:e.stage,message:e.message,nextAction:e.nextAction};}});
  const loopback=await new Promise(resolve=>{
@@ -22,7 +23,8 @@ async function checkEnvironment({files=[]}={}){
    client.once('connect',()=>finish());client.once('error',finish);
   });
  });
- const ready=process.platform==='win32'&&process.arch==='x64'&&!missing.length&&loopback.available;
- return {version:require('../plugin.json').version,identity:packageIdentity(),platform:process.platform,arch:process.arch,ready,missing,loopback,attachments,attachmentContentsRead:false,networkDownloadAttempted:false,hostToolRegistration:'not-verifiable-from-server',fallbackEntry:'server/main.cjs',nextAction:ready?'첨부가 있으면 현재 수정 작업을 계속하고 previewUrl을 내부 브라우저로 여세요.':'Windows x64 로컬 실행과 패키지 파일 및 로컬 포트 상태를 확인하세요.'};
+ const attachmentHelperRuntime=checkLibraryRuntime();
+ const ready=process.platform==='win32'&&process.arch==='x64'&&!missing.length&&loopback.available&&attachmentHelperRuntime.ready;
+ return {version:require('../plugin.json').version,identity:packageIdentity(),platform:process.platform,arch:process.arch,ready,missing,loopback,attachmentHelperRuntime,libraryHelperSource:'host-provided-not-verified-by-environment-check',attachments,attachmentContentsRead:false,networkDownloadAttempted:false,hostToolRegistration:'not-verifiable-from-server',fallbackEntry:'server/main.cjs',nextAction:ready?'첨부가 있으면 현재 수정 작업을 계속하고 previewUrl을 내부 브라우저로 여세요.':'Windows x64 로컬 실행과 패키지 파일 및 로컬 포트 상태를 확인하세요.'};
 }
 module.exports={checkEnvironment};

@@ -15,3 +15,5 @@ description: hj-hwpx-codex를 새 PC에 설치한 뒤 포함 실행기, 로컬 �
 5. 이미 설치된 PC에서 다른 결과가 나오면 재설치를 반복하지 않는다. 진단의 version·identity.skillSha256·identity.installedFilesSha256으로 실제 실행 서버의 패키지를 대조한다. 이 값은 서버 쪽 파일을 식별하며 호스트가 어떤 스킬을 선택했는지까지 증명하지 않는다. 첨부 전달 금지 안내가 계속 나오면 현재 읽은 스킬의 지침과 진단의 attachmentPolicy를 비교해 불일치를 밝힌다.
 
 6. 진단 중에도 HWP/HWPX 원본 첨부를 파일 뷰어로 열지 않는다. 문서 표시가 필요하면 hjhwpx가 생성한 HTML 검토 화면만 사용한다.
+
+7. `attachmentHelperRuntime.ready`가 실제 포함 Python의 실행·SSL/HTTP 모듈·파일 무결성 검사 결과인지 확인한다. `systemPythonUsed:false`, `separateInstallRequired:false`를 유지한다. 일반 `python`/`py`로 공식 helper를 실행하거나 설치를 요구하지 않는다. 첨부 전달에는 포함 Node로 `scripts/library-transfer.cjs --helper <공식helper> --transfer-json <전달응답JSON> --output <원본확장명경로>`를 사용한다. `ready:true`는 공식 helper 소스 제공이나 호스트의 실제 완료 보고 성공까지 뜻하지 않는다.

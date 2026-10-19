@@ -16,7 +16,7 @@ async function main(){
   try{assert.throws(()=>resolveAttachment(file),e=>e.code==='ATTACHMENT_ACCESS_DENIED');}finally{fs.accessSync=denied;}
   const read=fs.readFileSync;fs.readFileSync=(f,...args)=>{assert.notEqual(f,file,'진단은 본문을 읽으면 안 됩니다.');return read(f,...args);};
   let health;try{health=await checkEnvironment({files:[file,path.join(temp,'missing.hwp')]});}finally{fs.readFileSync=read;}
-  assert.equal(health.ready,process.platform==='win32'&&process.arch==='x64');assert.deepEqual(health.missing,[]);assert(health.loopback.available);
+  assert.equal(health.ready,process.platform==='win32'&&process.arch==='x64');assert.deepEqual(health.missing,[]);assert(health.loopback.available);assert(health.attachmentHelperRuntime.ready);assert.equal(health.attachmentHelperRuntime.systemPythonUsed,false);assert.equal(health.attachmentHelperRuntime.separateInstallRequired,false);
   assert(health.attachments[0].available);assert.equal(health.attachments[1].code,'ATTACHMENT_UNAVAILABLE');assert.equal(health.attachmentContentsRead,false);assert.equal(health.networkDownloadAttempted,false);
   assert.equal(health.hostToolRegistration,'not-verifiable-from-server');
   assert.equal(health.identity.version,require('../plugin.json').version);assert.match(health.identity.installedFilesSha256,/^[a-f0-9]{64}$/);assert.match(health.identity.skillSha256,/^[a-f0-9]{64}$/);assert.equal(health.identity.attachmentPolicy,'same-attachment-host-staging-allowed');assert.equal(health.identity.hostSelectedSkill,'not-verifiable-from-server');assert(!JSON.stringify(health.identity).includes(temp));
