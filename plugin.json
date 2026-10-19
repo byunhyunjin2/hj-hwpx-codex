@@ -26,9 +26,10 @@
         "shortDescription": "한글 문서 비교·검토·다운로드"
       },
       "mcpServers": "./.mcp.json",
-      "requires_local_executor": true
+      "requires_local_executor": true,
+      "onboardingSkill": "./skills/setup/SKILL.md"
     }
   },
   "name": "hj-hwpx-codex",
-  "version": "2.1.3"
+  "version": "2.1.4"
 }

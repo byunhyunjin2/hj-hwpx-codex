@@ -1,11 +1,11 @@
 {
   "mcpServers": {
     "hjhwpx": {
-      "command": "${CLAUDE_PLUGIN_ROOT}/runtime/win32-x64/node.exe",
+      "command": "${PLUGIN_ROOT}/runtime/win32-x64/node.exe",
       "args": [
-        "${CLAUDE_PLUGIN_ROOT}/server/mcp.cjs"
+        "${PLUGIN_ROOT}/server/mcp.cjs"
       ],
-      "cwd": "${CLAUDE_PLUGIN_ROOT}"
+      "cwd": "${PLUGIN_ROOT}"
     }
   }
 }

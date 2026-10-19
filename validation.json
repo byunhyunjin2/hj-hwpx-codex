@@ -1,85 +1,42 @@
 {
-  "version": "2.1.0",
-  "sourceStructure": {
-    "sections": 1,
-    "tables": 11,
-    "topLevelTables": 8,
-    "nestedTables": 3,
-    "paragraphs": 866,
-    "forcedLineBreaks": 24
+  "version": "2.1.4",
+  "status": "source-tests-passed",
+  "regressions": {
+    "originalTableStructure": true,
+    "unchangedReviewUI": true,
+    "layoutAnchors": true,
+    "pictureViewport": true,
+    "reviewNotesAndDateValidation": true,
+    "firstRunPathsAndDiagnostics": true,
+    "portableAndCompatibilityLaunchParity": true,
+    "mcpInitializationAndFourTools": true,
+    "missingRuntimeDetected": true,
+    "localAttachmentsOnly": true,
+    "remoteReferencesRejected": true,
+    "networkSharePathsRejected": true,
+    "startupDiagnosticCalledBeforeAttachment": true
   },
-  "pages": 12,
-  "scenarios": [
-    {
-      "id": "year-single",
-      "passed": true,
-      "changed": 1,
-      "held": 0,
-      "legacySkipped": 0
+  "documentIntegration": {
+    "version": "2.1.4",
+    "passed": true,
+    "isolatedLaunch": {
+      "cwdOutsidePlugin": true,
+      "systemNodeNotUsed": true,
+      "emptyPath": true
     },
-    {
-      "id": "year-protected",
-      "passed": true,
-      "changed": 19,
-      "held": 2,
-      "legacySkipped": 0
-    },
-    {
-      "id": "nested-amount-longer",
-      "passed": true,
-      "changed": 4,
-      "held": 0,
-      "legacySkipped": 1
-    },
-    {
-      "id": "nested-material-longer",
-      "passed": true,
-      "changed": 3,
-      "held": 0,
-      "legacySkipped": 1
-    },
-    {
-      "id": "nested-and-wrapped-cell",
-      "passed": true,
-      "changed": 3,
-      "held": 0,
-      "legacySkipped": 2
-    },
-    {
-      "id": "forced-line-break",
-      "passed": true,
-      "changed": 1,
-      "held": 0,
-      "legacySkipped": 1
-    },
-    {
-      "id": "field-control-longer-blocked",
-      "passed": true,
-      "blocked": true,
-      "code": "HWP_PARAGRAPH_UNSUPPORTED"
-    },
-    {
-      "id": "explicit-protected-block",
-      "passed": true,
-      "changed": 0,
-      "held": 3,
-      "legacySkipped": 0
-    },
-    {
-      "id": "block-scoped-change",
-      "passed": true,
-      "changed": 11,
-      "held": 0,
-      "legacySkipped": 0
-    },
-    {
-      "id": "multi-replacement",
-      "passed": true,
-      "changed": 22,
-      "held": 2,
-      "legacySkipped": 1
-    }
-  ],
-  "noDocumentFilesWritten": true,
-  "originalBytesUnchanged": true
+    "sourcePages": 12,
+    "changedCount": 3,
+    "httpPreview": true,
+    "sameMemorySession": true,
+    "staleRevisionBlocked": true,
+    "agentExportBlocked": true,
+    "unauthorizedDownloadBlocked": true,
+    "sourceHashUnchanged": true,
+    "noDocumentFileWritten": true
+  },
+  "limitations": [
+    "호스트가 새 설치 후 도구를 자동 등록하고 Setup을 호출하는지는 이 서버 검사로 보증하지 않습니다.",
+    "다른 실제 PC에서 설치한 결과를 의미하지 않습니다. 패키지를 다른 경로에 풀어 빈 PATH로 검사합니다.",
+    "호스트 첨부 전달 또는 브라우저 접근 정책을 플러그인이 강제 변경하지 않습니다."
+  ]
 }

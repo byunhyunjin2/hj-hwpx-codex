@@ -5,3 +5,4 @@
 private-review/
 node_modules/
 .renderer-build/
+outputs/
