@@ -1,12 +1,16 @@
 {
-  "version": "2.1.8",
+  "version": "2.1.9",
   "status": "release-source-and-isolated-package-tests-passed",
-  "previousValidationVersion": "2.1.7",
+  "previousValidationVersion": "2.1.8",
   "testGroupsPassed": 12,
   "regressions": {
     "staticHtmlPreviewHasNoLoopbackDependency": true,
     "pythonIndependentLocalEditorReadiness": true,
     "sameAttachmentHostStagingPreserved": true,
+    "chatFileOfficialInputRegistered": true,
+    "chatFileDownloadMockedAndValidated": true,
+    "attachmentTemporaryCopyDeletedAfterParsing": true,
+    "previewTemporaryDirectoryDeletedOnClose": true,
     "bundledPythonAndHelperInvocationContract": true,
     "utf8AndUtf16TransferJson": true,
     "completionCallbackAndByteParityFixture": true,
@@ -32,11 +36,13 @@
     "systemPathEmpty": true,
     "bundledNodeAndPython": true,
     "actualHostLibraryHelperTested": false,
-    "helperInvocationContractTested": true
+    "helperInvocationContractTested": true,
+    "actualChatGPTHostAttachmentHandoffTested": false,
+    "universityNetworkAttachmentHostAccessTested": false
   },
   "limitations": [
-    "실제 ChatGPT/Codex 설치 후 메뉴 라우팅·내부 브라우저, 별도 새 PC, 호스트 공식 Library helper 실시간 연동은 미검증입니다.",
+    "실제 ChatGPT/Codex 설치 후 메뉴 라우팅·내부 브라우저, 실제 ChatGPT 첨부 전달, 대학 내부망에서 공식 첨부 호스트 접근, 별도 새 PC, 호스트 공식 Library helper 실시간 연동은 미검증입니다.",
     "복잡한 중첩표 등 원본 HWP 구조 매핑이 불확실한 수정은 다운로드를 차단합니다. 자동 개인정보 판정은 사용자 최종 검토를 대체하지 않습니다."
   ],
-  "validatedAt": "2026-10-19"
+  "validatedAt": "2026-10-20"
 }

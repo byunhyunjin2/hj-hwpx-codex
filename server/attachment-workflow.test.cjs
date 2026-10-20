@@ -25,18 +25,21 @@ async function main(){
   const service=await createService();
   const opened=await service.open({attachment:receipt,outputDirectory:temp,plan:{replacements:[{from:'2026',to:'2027',expectedCount:1}]}});
    assert.equal(opened.sourceName,selected.name);assert.equal(opened.attachmentReferenceId,selected.referenceId);assert.equal(opened.format,'hwpx');assert(opened.downloadReady);
-   assert.equal(opened.previewKind,'self-contained-html');assert(!opened.previewUrl);assert(!opened.previewTarget);assert.deepEqual(opened.presentation,{kind:'html-review-only',openOriginalAttachment:false});
+   assert.equal(opened.previewKind,'self-contained-html');assert(!opened.previewUrl);assert(!opened.previewTarget);assert.deepEqual(opened.presentation,{kind:'html-review-only',openOriginalAttachment:false});assert(path.resolve(opened.previewPath).startsWith(path.resolve(os.tmpdir())+path.sep));assert(!path.resolve(opened.previewPath).startsWith(path.resolve(__dirname,'..')+path.sep));
    const updated=await service.update({sessionId:opened.sessionId,expectedRevision:opened.revision,plan:{replacements:[{from:'2026',to:'2027',expectedCount:1}]}});assert.equal(updated.previewKind,'self-contained-html');assert(!updated.previewUrl);assert(!updated.previewTarget);assert.equal(updated.presentation.openOriginalAttachment,false);
    const html=fs.readFileSync(updated.previewPath,'utf8');assert.match(html,/다운로드 · HWPX/);assert.match(html,/iframe/);assert.match(html,/비교보기/);assert.match(html,/함께 스크롤/);assert(!html.includes('fetch('));
    const embedded=JSON.parse(html.match(/const snapshot=(\{.*?\});\s*const bytes/s)[1]);const before=Buffer.from(embedded.before,'base64').toString(),after=Buffer.from(embedded.after,'base64').toString();assert.match(before,/2026/);assert.match(after,/2027/);assert.match(after,/change-mark/);assert(embedded.document);
-   assert.match(html,/검토반영_r\d+\.hwpx/);assert.notEqual(opened.previewPath,updated.previewPath);
+   assert.match(html,/검토반영_r\d+\.hwpx/);assert.notEqual(opened.previewPath,updated.previewPath);assert(!fs.existsSync(path.join(path.dirname(updated.previewPath),'host-staged-original.bin')));
+  const closed=service.close({sessionId:opened.sessionId});assert.equal(closed.temporaryFilesRemoved,true);assert(!fs.existsSync(updated.previewPath));
+  const realFetch=global.fetch;global.fetch=async url=>{assert.equal(new URL(url).hostname,'files.oaiusercontent.com');return new Response(bytes,{status:200,headers:{'content-length':String(bytes.length)}});};
+  try{const direct=await service.open({chatFile:{download_url:'https://files.oaiusercontent.com/test-fixture',file_id:'file_chat_attachment_fixture',file_name:selected.name},plan:{replacements:[]}});assert.equal(direct.sourceName,selected.name);assert.equal(direct.attachmentReferenceId,'file_chat_attachment_fixture');assert(path.resolve(direct.previewPath).startsWith(path.resolve(os.tmpdir())+path.sep));assert.deepEqual(fs.readdirSync(path.dirname(direct.previewPath)).map(path.extname),['.html']);assert(service.close({sessionId:direct.sessionId}).temporaryFilesRemoved);assert(!fs.existsSync(direct.previewPath));}finally{global.fetch=realFetch;}
   const receiptPath=path.join(temp,'attachment-receipt.json');fs.writeFileSync(receiptPath,JSON.stringify(receipt));
   const cli=cp.spawnSync(path.resolve(__dirname,'../runtime/win32-x64/node.exe'),[path.resolve(__dirname,'main.cjs'),'--attachment',receiptPath,temp],{input:JSON.stringify({id:1,method:'shutdown'})+'\n',encoding:'utf8',windowsHide:true,timeout:30000});
-  assert.equal(cli.status,0,cli.stderr);const cliResult=JSON.parse(cli.stdout.trim().split(/\r?\n/)[0]);assert.equal(cliResult.previewKind,'self-contained-html');assert(!cliResult.previewUrl);assert(fs.existsSync(cliResult.previewPath));assert.match(fs.readFileSync(cliResult.previewPath,'utf8'),/다운로드 · HWPX/);
+  assert.equal(cli.status,0,cli.stderr);const cliResult=JSON.parse(cli.stdout.trim().split(/\r?\n/)[0]);assert.equal(cliResult.previewKind,'self-contained-html');assert(!cliResult.previewUrl);assert(path.resolve(cliResult.previewPath).startsWith(path.resolve(os.tmpdir())+path.sep));assert(!fs.existsSync(cliResult.previewPath));
   assert(fs.readFileSync(staged).equals(bytes));
   await assert.rejects(()=>core.openDocument({...receipt,name:'잘못된 확장명.hwp'},temp),e=>e.code==='ATTACHMENT_EXTENSION_MISMATCH');
   assert(!fs.readdirSync(temp).some(n=>/\.(hwp|hwpx)$/i.test(n)));
-  console.log('PASS: attachment reference -> host staging receipt -> HWPX modification -> verified original extension; missing staging, source identity, extension mismatch and original preservation');
+ console.log('PASS: ChatGPT attachment file handoff -> user-temp staging and cleanup; host staging receipt -> HWPX modification -> verified original extension; source identity, extension mismatch and original preservation');
  }finally{assert(path.resolve(temp).startsWith(path.resolve(os.tmpdir())+path.sep));assert(path.basename(temp).startsWith('hjhwpx-workflow-'));fs.rmSync(temp,{recursive:true,force:true});}
 }
 main().catch(e=>{console.error(e);process.exitCode=1;});

@@ -31,7 +31,7 @@ async function main(){
   const replies=cp.execFileSync(process.execPath,[path.join(root,'server/mcp.cjs')],{input:requests.map(JSON.stringify).join('\n')+'\n',encoding:'utf8',timeout:20000,windowsHide:true}).trim().split('\n').map(JSON.parse);
   assert.equal(replies.length,6);assert.match(replies[0].result.instructions,/원본 첨부를 뷰어로 열지 않습니다/);assert.equal(replies[0].result.serverInfo.version,require('../plugin.json').version);
   assert(replies[1].result.tools.some(t=>t.name==='hjhwpx_check_environment'));
-  const openSchema=replies[1].result.tools.find(t=>t.name==='hjhwpx_open_document').inputSchema;assert(openSchema.properties.attachment);assert.equal(openSchema.oneOf.length,2);assert.deepEqual(openSchema.properties.attachment.required,['name','referenceId']);
+  const openTool=replies[1].result.tools.find(t=>t.name==='hjhwpx_open_document'),openSchema=openTool.inputSchema;assert(openSchema.properties.attachment);assert(openSchema.properties.chatFile);assert.equal(openSchema.oneOf.length,3);assert.deepEqual(openSchema.properties.attachment.required,['name','referenceId']);assert.deepEqual(openTool._meta['openai/fileParams'],['chatFile']);
   assert(JSON.parse(replies[2].result.content[0].text).attachments[0].available);
   assert.equal(replies[3].result.isError,true);assert.equal(JSON.parse(replies[3].result.content[0].text).code,'ATTACHMENT_UNAVAILABLE');
   assert.equal(JSON.parse(replies[4].result.content[0].text).code,'ATTACHMENT_STAGING_REQUIRED');assert.equal(JSON.parse(replies[4].result.content[0].text).attachment.referenceId,'file_existing_attachment');assert.equal(JSON.parse(replies[5].result.content[0].text).attachment.referenceId,'libfile_existing');

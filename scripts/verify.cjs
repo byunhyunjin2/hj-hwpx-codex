@@ -7,5 +7,6 @@ for(const folder of ['server','scripts'])for(const file of fs.readdirSync(path.j
 for(const test of ['server/hwp-structure.test.cjs','server/ui-preservation.test.cjs','server/layout-anchor.test.cjs','server/picture-viewport.test.cjs','server/review-annotations.test.cjs','server/first-run.test.cjs','server/attachment-workflow.test.cjs','server/roster-metadata.test.cjs','server/preview-layout.test.cjs','server/hwp-linebreak.test.cjs','server/library-runtime.test.cjs','server/environment-permissions.test.cjs'])process.stdout.write(cp.execFileSync(process.execPath,[path.join(root,test)],{encoding:'utf8'}));
 const requests=[{jsonrpc:'2.0',id:1,method:'initialize',params:{protocolVersion:'2025-06-18'}},{jsonrpc:'2.0',id:2,method:'tools/list'}];
 const replies=cp.execFileSync(process.execPath,[path.join(root,'server/mcp.cjs')],{input:requests.map(r=>JSON.stringify(r)).join('\n')+'\n',encoding:'utf8'}).trim().split('\n').map(r=>JSON.parse(r));
-assert.equal(replies.find(r=>r.id===1).result.serverInfo.version,manifest.version);assert.equal(replies.find(r=>r.id===2).result.tools.length,4);
+assert.equal(replies.find(r=>r.id===1).result.serverInfo.version,manifest.version);assert.equal(replies.find(r=>r.id===2).result.tools.length,5);
+assert.deepEqual(replies.find(r=>r.id===2).result.tools.find(t=>t.name==='hjhwpx_open_document')._meta['openai/fileParams'],['chatFile']);
 console.log('PASS: manifests, all server/script syntax, MCP initialization and tool discovery');
