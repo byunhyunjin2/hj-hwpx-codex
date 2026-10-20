@@ -4,7 +4,7 @@
 
 Windows x64에서 **채팅에 첨부한 HWP·HWPX**를 로컬로 수정·비교하고 원래 형식으로 다운로드하는 플러그인입니다. 필요한 Node·Python·문서 엔진을 포함하므로 별도 설치가 필요하지 않습니다.
 
-최신 배포: [**v2.2.0 hj-hwpx-codex 2.2.0**](https://github.com/byunhyunjin2/hj-hwpx-codex/releases/tag/v2.2.0)
+최신 배포: [**v2.2.1 hj-hwpx-codex 2.2.1**](https://github.com/byunhyunjin2/hj-hwpx-codex/releases/tag/v2.2.1)
 
 ## 사용
 
@@ -16,7 +16,7 @@ Windows x64에서 **채팅에 첨부한 HWP·HWPX**를 로컬로 수정·비교�
 
 ## 설치·업데이트
 
-릴리즈의 `hj-hwpx-codex-2.2.0.zip`을 플러그인 화면에서 추가하거나 GitHub 마켓플레이스를 사용합니다.
+릴리즈의 `hj-hwpx-codex-2.2.1.zip`을 플러그인 화면에서 추가하거나 GitHub 마켓플레이스를 사용합니다.
 
 최초 설치:
 
@@ -34,6 +34,10 @@ codex plugin add hj-hwpx-codex@hj-hwpx
 ```
 
 업데이트 후 새 채팅에서 사용하세요.
+
+## 2.2.1 변경
+
+연도 변경 시 제목·행사명·본문·표 등 관련 비개인정보 연도를 문서 전체에서 점검합니다. 학번 같은 개인정보 식별자는 보존하고 빨간색으로 표시합니다. 변경 연도와 연결된 날짜 전체는 빨간색 `확인 필요` 대상으로, 과거 기록·서명일 또는 모호한 날짜는 원문을 보존한 확인 대상으로 표시합니다. 검토는 하나의 세션에서 진행하고 최신 미리보기만 표시합니다.
 
 ## 2.2.0 변경
 

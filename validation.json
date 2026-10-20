@@ -1,9 +1,9 @@
 {
-  "version": "2.2.0",
-  "previousValidationVersion": "2.1.9",
+  "version": "2.2.1",
+  "previousValidationVersion": "2.2.0",
   "status": "release-source-and-isolated-package-tests-passed",
   "validatedAt": "2026-10-20",
-  "testGroupsPassed": 13,
+  "testGroupsPassed": 14,
   "regressions": {
     "mcpAppsCapabilityNegotiation": true,
     "mcpHtmlResourceDiscovery": true,
@@ -40,8 +40,15 @@
     "mcpResourceIntegration": true,
     "actualHostLibraryHelperTested": false
   },
+  "manualChecks": {
+    "yearChangeReviewsAllRelatedNonPersonalReferences": true,
+    "personalIdentifiersPreservedAndFlagged": true,
+    "fullRelatedDatesFlaggedForConfirmation": true,
+    "oneFinalPreviewOnly": true
+  },
   "limitations": [
     "실제 학교 PC 및 실제 ChatGPT/Codex 호스트의 MCP HTML 표시·다운로드 연동은 미검증입니다.",
+    "연도 검토 기준은 스킬 지침으로 구체화했으며 별도의 자동 문서 본문 연도 탐지 엔진을 추가하지 않았습니다. 실제 문서의 날짜·요일 확정은 사용자가 검토해야 합니다.",
     "첨부 전달·Python helper 시작은 이번 변경 대상이 아닙니다. 복잡한 문서나 검증 불일치는 다운로드를 중단합니다."
   ]
 }
