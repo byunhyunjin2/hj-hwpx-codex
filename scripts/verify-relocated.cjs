@@ -19,7 +19,7 @@ async function main(){
   const health=JSON.parse(cp.execFileSync(node,[path.join(dest,'scripts/check-environment.cjs')],{env,encoding:'utf8',windowsHide:true}));
   assert(health.ready);assert(health.attachmentHelperRuntime.ready);assert.equal(health.attachmentHelperRuntime.systemPythonUsed,false);
   // Test fixtures remain outside the archive; resolve their imports against the extracted package.
-  for(const file of ['attachment-workflow.test.cjs','library-runtime.test.cjs']){
+  for(const file of ['attachment-workflow.test.cjs','library-runtime.test.cjs','mcp-view.test.cjs']){
    const test=path.join(dest,'server',file);fs.copyFileSync(path.join(root,'server',file),test);
    process.stdout.write(cp.execFileSync(node,[test],{env,encoding:'utf8',windowsHide:true,timeout:60000}));
   }

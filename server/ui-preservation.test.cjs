@@ -7,3 +7,9 @@ for(const snapshot of [null,{before:'',after:'',document:'AA==',name:'test.hwp'}
  assert.match(html,/onchange=e=>settle/);assert.match(html,/previousElementSibling/);
 }
 console.log('PASS: live/snapshot controls, scripts, hidden-pane and page-position guards');
+const mcpHtml=ui(session,'',null,{mcp:true}),legacyHtml=ui(session,'',{before:'',after:'',document:'AA==',name:'test.hwp'});
+new vm.Script(mcpHtml.match(/<script>([\s\S]*?)<\/script>/)[1]);
+assert(!mcpHtml.includes('<iframe'));assert.match(mcpHtml,/frame-src 'none'/);assert.match(mcpHtml,/connect-src 'none'/);
+const styles=html=>[...html.matchAll(/<style>([\s\S]*?)<\/style>/g)].map(m=>m[1]);
+assert.equal(styles(mcpHtml).at(-1),styles(legacyHtml).at(-1),'Shared toolbar/layout/color/default styles must be identical');
+for(const id of ['compare','download','page','sync','before','after'])assert(mcpHtml.includes('id="'+id+'"'));

@@ -12,6 +12,7 @@ async function writeSnapshot(session){
  const before=compact(session.before),after=compact(session.after);
  const payload={assets,before:Buffer.from(before).toString('base64'),after:Buffer.from(after).toString('base64'),document:candidate?Buffer.from(candidate.data).toString('base64'):null,name:stem+'_검토반영_r'+revision+'.'+session.format,error,revision};
  const html=ui(session,'',payload);
+ session.reviewPayload=payload;
  fs.mkdirSync(session.outputDirectory,{recursive:true});
  const previewPath=path.join(session.outputDirectory,stem+'_비교미리보기_'+session.id.slice(0,8)+'_r'+revision+'.html');
  fs.writeFileSync(previewPath,html,{flag:'wx'});
