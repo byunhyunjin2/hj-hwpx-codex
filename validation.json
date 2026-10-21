@@ -1,8 +1,8 @@
 {
-  "version": "2.2.1",
-  "previousValidationVersion": "2.2.0",
+  "version": "2.2.2",
+  "previousValidationVersion": "2.2.1",
   "status": "release-source-and-isolated-package-tests-passed",
-  "validatedAt": "2026-10-20",
+  "validatedAt": "2026-10-21",
   "testGroupsPassed": 14,
   "regressions": {
     "mcpAppsCapabilityNegotiation": true,
@@ -15,7 +15,9 @@
     "legacyHtmlFallbackPreserved": true,
     "originalFormatAndSourceBytesPreserved": true,
     "privacyAndLayoutRegressions": true,
-    "bundledPythonHelperContract": true
+    "bundledPythonHelperContract": true,
+    "missingMcpToolContinuesWithBundledRuntimeInstructions": true,
+    "saveAsPickerWritesAndHandlesCancel": true
   },
   "browserIntegration": {
     "host": "simulated MCP host in offline Edge headless",
@@ -31,7 +33,10 @@
     "userClickOnlyDownloadRequest": true,
     "downloadDenialAndUnsupportedHost": true,
     "actualDocumentDownloadSaved": false,
-    "teardownChecked": true
+    "teardownChecked": true,
+    "saveLocationPickerMocked": true,
+    "saveLocationCancelDoesNotFallback": true,
+    "hostDownloadFallbackWhenPickerUnavailable": true
   },
   "packageIntegration": {
     "relocatedPathWithKoreanAndSpaces": true,
@@ -47,8 +52,9 @@
     "oneFinalPreviewOnly": true
   },
   "limitations": [
-    "실제 학교 PC 및 실제 ChatGPT/Codex 호스트의 MCP HTML 표시·다운로드 연동은 미검증입니다.",
-    "연도 검토 기준은 스킬 지침으로 구체화했으며 별도의 자동 문서 본문 연도 탐지 엔진을 추가하지 않았습니다. 실제 문서의 날짜·요일 확정은 사용자가 검토해야 합니다.",
-    "첨부 전달·Python helper 시작은 이번 변경 대상이 아닙니다. 복잡한 문서나 검증 불일치는 다운로드를 중단합니다."
+    "실제 ChatGPT/Codex 호스트와 학교 PC에서의 MCP HTML 표시·저장 위치 선택·파일 저장 연동은 미검증입니다.",
+    "저장 위치 선택 API가 호스트에서 차단되거나 지원되지 않으면 호스트 또는 브라우저 다운로드 정책이 저장 위치를 결정합니다.",
+    "연도 검토 기준은 스킬 지침이며 별도의 자동 문서 본문 연도 탐지 엔진이 아닙니다. 실제 문서 날짜·요일의 최종 확인은 사용자가 해야 합니다.",
+    "Library 검증은 호스트의 실제 helper가 아닌 계약 fixture를 사용했습니다."
   ]
 }

@@ -52,10 +52,23 @@ function runtime(){
    window.parent.postMessage({jsonrpc:'2.0',id:m.id,result:{}},'*');
   }
  });
+ async function saveWithPicker(snapshot){
+  if(typeof window.showSaveFilePicker!=='function')return false;
+  const hwpx=snapshot.name.toLowerCase().endsWith('.hwpx'),extension=hwpx?'.hwpx':'.hwp',mimeType=hwpx?'application/hwp+zip':'application/x-hwp';
+  let handle;
+  try{handle=await window.showSaveFilePicker({suggestedName:snapshot.name,types:[{description:hwpx?'한글 문서 (HWPX)':'한글 문서 (HWP)',accept:{[mimeType]:[extension]}}]});}
+  catch(error){if(error?.name==='AbortError')throw Error('저장 위치 선택을 취소했습니다. 파일을 저장하지 않았습니다.');if(['SecurityError','NotAllowedError','TypeError'].includes(error?.name))return false;throw error;}
+  const writable=await handle.createWritable();
+  try{await writable.write(Uint8Array.from(atob(snapshot.document),c=>c.charCodeAt(0)));await writable.close();}
+  catch(error){try{await writable.abort?.();}catch{}throw Error('선택한 위치에 파일을 쓰지 못했습니다. 파일을 저장하지 않았습니다.');}
+  return true;
+ }
  async function download(snapshot){
-  if(!hostCapabilities.downloadFile)throw Error('현재 호스트는 MCP 파일 다운로드를 지원하지 않습니다. 다운로드를 완료하지 않았습니다.');
+  if(await saveWithPicker(snapshot))return {savedByUser:true};
+  if(!hostCapabilities.downloadFile)throw Error('이 화면에서 저장 위치 선택을 지원하지 않고 호스트 파일 다운로드도 사용할 수 없습니다. 파일을 저장하지 않았습니다.');
   const result=await request('ui/download-file',{contents:[{type:'resource',resource:{uri:'file:///'+encodeURIComponent(snapshot.name),mimeType:snapshot.name.endsWith('.hwpx')?'application/hwp+zip':'application/x-hwp',blob:snapshot.document}}]});
   if(result?.isError)throw Error('호스트에서 다운로드를 취소하거나 거부했습니다.');
+  return {savedByUser:false};
  }
  function connect(){
   document.getElementById('download').disabled=true;
@@ -64,6 +77,6 @@ function runtime(){
    notify('ui/notifications/size-changed',{width:document.documentElement.clientWidth,height:window.innerHeight||760});
   }).catch(()=>problem('MCP HTML 호스트 연결에 실패했습니다. 지원 여부를 확인하세요.'));
  }
- return {panel,download,connect,closed:()=>closed,canDownload:()=>!!hostCapabilities.downloadFile};
+ return {panel,download,connect,closed:()=>closed,canDownload:()=>!!hostCapabilities.downloadFile||typeof window.showSaveFilePicker==='function'};
 }
 module.exports='('+runtime.toString()+')()';

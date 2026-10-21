@@ -18,10 +18,19 @@ async function main(){
  try{
   await page.setContent('<!doctype html><html><body style="margin:0"></body></html>');
   await page.evaluate(({html})=>{
-   window.downloadRequests=[];window.initialized=false;window.allowDownload=true;window.denyDownload=false;
+   window.downloadRequests=[];window.savedFiles=[];window.pickerCalls=[];window.pickerMode='save';window.initialized=false;window.allowDownload=true;window.denyDownload=false;
    window.addEventListener('message',e=>{if(e.source!==window.viewer?.contentWindow)return;const m=e.data;if(m.method==='ui/initialize')e.source.postMessage({jsonrpc:'2.0',id:m.id,result:{protocolVersion:'2026-01-26',hostCapabilities:window.allowDownload?{downloadFile:{}}:{}}},'*');else if(m.method==='ui/notifications/initialized')window.initialized=true;else if(m.method==='ui/download-file'){window.downloadRequests.push(m.params);e.source.postMessage({jsonrpc:'2.0',id:m.id,result:window.denyDownload?{isError:true}:{}},'*');}});
    const frame=document.createElement('iframe');frame.id='viewer';frame.style.cssText='width:100%;height:800px;border:0';frame.sandbox='allow-scripts allow-same-origin';frame.srcdoc=html;window.viewer=frame;document.body.append(frame);
   },{html:resource().text});
+  await page.evaluate(()=>{
+   window.viewer.contentWindow.showSaveFilePicker=async options=>{
+    window.pickerCalls.push(options);
+    if(window.pickerMode==='cancel'){const e=Error('cancelled');e.name='AbortError';throw e}
+    if(window.pickerMode==='blocked'){const e=Error('blocked');e.name='SecurityError';throw e}
+    let chunks=[];
+    return {name:options.suggestedName,createWritable:async()=>({write:async bytes=>chunks.push(...bytes),close:async()=>window.savedFiles.push({name:options.suggestedName,bytes:chunks}),abort:async()=>{}})};
+   };
+  });
   await page.waitForFunction(()=>window.initialized);
   const frame=page.frames().find(f=>f.parentFrame());assert(frame);
   const send=async r=>page.evaluate(r=>window.viewer.contentWindow.postMessage({jsonrpc:'2.0',method:'ui/notifications/tool-result',params:{_meta:{review:r}}},'*'),r);
@@ -36,7 +45,10 @@ async function main(){
   await frame.locator('#compare').click();await page.waitForTimeout(100);assert.equal(await frame.locator('#page').inputValue(),'3');
   // A synthetic DOM click must not export; Playwright's user input below is routed to a mock host only.
   await frame.evaluate(()=>document.getElementById('download').click());assert.equal(await page.evaluate(()=>window.downloadRequests.length),0);
-  await frame.locator('#download').click();await page.waitForFunction(()=>window.downloadRequests.length===1);
+  await frame.locator('#download').click();await page.waitForFunction(()=>window.savedFiles.length===1);
+  const saved=await page.evaluate(()=>window.savedFiles[0]);assert.match(saved.name,/\.hwpx$/);assert.deepEqual(saved.bytes,[...Buffer.from('test-only-not-a-user-document')]);assert.equal(await page.evaluate(()=>window.pickerCalls[0].suggestedName),review().snapshot.name);assert.equal(await page.evaluate(()=>window.downloadRequests.length),0);
+  await page.evaluate(()=>{window.pickerMode='cancel'});await frame.locator('#download').click();await frame.locator('#status').filter({hasText:'저장 위치 선택을 취소'}).waitFor();assert.equal(await page.evaluate(()=>window.downloadRequests.length),0);
+  await page.evaluate(()=>{window.pickerMode='blocked';delete window.viewer.contentWindow.showSaveFilePicker});await frame.locator('#download').click();await page.waitForFunction(()=>window.downloadRequests.length===1);
   const sent=await page.evaluate(()=>window.downloadRequests[0].contents[0].resource);assert.equal(sent.blob,review().snapshot.document);assert.equal(sent.mimeType,'application/hwp+zip');assert(decodeURIComponent(sent.uri).endsWith('.hwpx'));
   await send(review(2));await frame.waitForFunction(()=>document.querySelector('.key.yellow').textContent.includes('2곳')&&!document.getElementById('download').disabled);
   await send(review(1));await page.waitForTimeout(100);assert.match(await frame.locator('.key.yellow').innerText(),/2곳/);
@@ -59,7 +71,7 @@ async function main(){
   assert.match(await parsed.locator('#after').evaluate(e=>e.shadowRoot.textContent),/2027/);assert.match(await parsed.locator('#before').evaluate(e=>e.shadowRoot.textContent),/2026/);assert(await parsed.locator('#after .change-mark').count());
   assert.equal(await parsed.locator('#page option').count(),opened.pageCount);assert(fs.readFileSync(source).equals(original));
   await page.evaluate(()=>window.viewer.contentWindow.postMessage({jsonrpc:'2.0',id:777,method:'ui/resource-teardown',params:{}},'*'));await parsed.waitForFunction(()=>document.getElementById('after').shadowRoot.childElementCount===0);assert(await parsed.locator('#download').isDisabled());
-  console.log('PASS: offline sandboxed MCP HTML rendering, real HWPX/legacy payload parity, no nested frames/network, unchanged controls/colors/scroll/page state, mock-host click-only download/denial, revisions, teardown and responsive sizes');
+  console.log('PASS: offline sandboxed MCP HTML rendering, Save As picker write/cancel and host fallback, real HWPX/legacy payload parity, no nested frames/network, click-only download/denial, revisions, teardown and responsive sizes');
  }finally{if(service&&sessionId)service.close({sessionId});await context.close();await browser.close();assert(path.resolve(temp).startsWith(path.resolve(os.tmpdir())+path.sep));assert(path.basename(temp).startsWith('hjhwpx-mcp-browser-'));fs.rmSync(temp,{recursive:true,force:true});}
 }
 main().catch(e=>{console.error(e.stack);process.exitCode=1;});

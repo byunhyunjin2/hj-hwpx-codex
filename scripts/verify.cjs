@@ -3,8 +3,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const root=path.resolve(__dirname,'..'),manifest=require('../plugin.json');
 assert.equal(require('../.codex-plugin/plugin.json').version,manifest.version);
 const workflow=fs.readFileSync(path.join(root,'skills/hjhwpx/SKILL.md'),'utf8');
-for(const phrase of ['새 기준 연도와 분명히 연관된 비개인정보 연도는 모두 바꾸고','개인정보 식별자는 숫자가 연도처럼 보여도 값을 보존하고 빨간색으로 표시하며','날짜 전체에 빨간색 `확인 필요` 표시','최신 revision만 한 번 연다','별도 HTML 파일 탭을 추가로 열지 않는다'])assert(workflow.includes(phrase),`missing workflow rule: ${phrase}`);
-console.log('PASS: whole-document year review, identifier privacy, full-date confirmation and one final preview instructions');
+for(const phrase of ['새 기준 연도와 분명히 연관된 비개인정보 연도는 모두 바꾸고','개인정보 식별자는 숫자가 연도처럼 보여도 값을 보존하고 빨간색으로 표시하며','날짜 전체에 빨간색 `확인 필요` 표시','최신 revision만 한 번 연다','별도 HTML 파일 탭을 추가로 열지 않는다','MCP 도구가 현재 대화의 도구 목록에 없거나 호출에 실패했다는 이유만으로 거절하거나 첨부를 다시 요구하지 않는다','저장 위치 선택 창을 우선 연다'])assert(workflow.includes(phrase),`missing workflow rule: ${phrase}`);
+assert(fs.readFileSync(path.join(root,'server/mcp-view-client.cjs'),'utf8').includes('showSaveFilePicker'));
+assert(fs.readFileSync(path.join(root,'server/ui.cjs'),'utf8').includes('저장 위치 선택을 사용할 수 없어 브라우저 다운로드를 시작했습니다'));
+console.log('PASS: whole-document year review, identifier privacy, full-date confirmation, local runtime fallback, Save As and one final preview instructions');
 for(const file of ['.mcp.json','mcp.json','validation.json'])JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
 for(const folder of ['server','scripts'])for(const file of fs.readdirSync(path.join(root,folder)).filter(n=>n.endsWith('.cjs')))cp.execFileSync(process.execPath,['--check',path.join(root,folder,file)]);
 for(const test of ['server/hwp-structure.test.cjs','server/ui-preservation.test.cjs','server/layout-anchor.test.cjs','server/picture-viewport.test.cjs','server/review-annotations.test.cjs','server/first-run.test.cjs','server/attachment-workflow.test.cjs','server/roster-metadata.test.cjs','server/preview-layout.test.cjs','server/hwp-linebreak.test.cjs','server/library-runtime.test.cjs','server/environment-permissions.test.cjs','server/mcp-view.test.cjs'])process.stdout.write(cp.execFileSync(process.execPath,[path.join(root,test)],{encoding:'utf8'}));
